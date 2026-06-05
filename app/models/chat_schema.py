@@ -6,4 +6,5 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     """Schema for chat response."""
-    response: str
+    merchandise_name: str
+    preferential_rate_applicable: list[str]
