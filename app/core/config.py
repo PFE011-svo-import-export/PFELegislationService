@@ -5,6 +5,8 @@ class Settings(BaseSettings):
     service_name: str = "PFE Legislation Service"
     anthropic_api_key: str
     open_api_key: str = ""
+    ollama_base_url: str = "http://localhost:11434"
+    ollama_embed_model: str = "nomic-embed-text"
 
     model_config = {
         "env_file": ".env",
