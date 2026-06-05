@@ -8,4 +8,5 @@ dependencies = [
     "mistletoe>=1.5.1",
     "ollama>=0.6.2",
     "pydantic-settings>=2.14.1",
+    "qdrant-client>=1.18.0",
 ]

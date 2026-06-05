@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     open_api_key: str = ""
     ollama_base_url: str = "http://localhost:11434"
     ollama_embed_model: str = "nomic-embed-text"
+    qdrant_url: str = "http://localhost:6333"
 
     model_config = {
         "env_file": ".env",

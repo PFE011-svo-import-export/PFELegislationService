@@ -1,13 +1,17 @@
 from ollama import Client as OllamaClient
 from mistletoe import Document
 from mistletoe.ast_renderer import ASTRenderer
+from app.storage.qdrant_vectordb import VectorStore
 import json
 import mistletoe
+import uuid
+from app.models.chunk_schema import ChunkMetadata, DocumentChunk
 
 class RagService:
-    def __init__(self, client: OllamaClient, embed_model: str):
+    def __init__(self, client: OllamaClient, embed_model: str, vector_store: VectorStore):
         self.client = client
         self.embed_model = embed_model
+        self.vector_store = vector_store
 
      # ─── Embedding ────────────────────────────────────────────────────────────
     def embed(self, text: str) -> list[float]:
@@ -153,23 +157,11 @@ class RagService:
     # ─── Pipeline complet ─────────────────────────────────────────────────────
 
     def embed_md_file(self, filepath: str) -> list[dict]:
-        """
-        Parse, chunk et embed un fichier .md en une seule passe.
-
-        Retourne:
-            [
-                {
-                    "vector": [...],
-                    "content": "...",
-                    "metadata": { "source": ..., "heading_path": ..., "chunk_index": ... }
-                },
-                ...
-            ]
-        """
         chunks = self.chunk_md_file(filepath)
         texts = [c["content"] for c in chunks]
         vectors = self.embed_batch(texts)
-        return [
+        
+        data = [
             {
                 "vector": vector,
                 "content": chunk["content"],
@@ -177,3 +169,16 @@ class RagService:
             }
             for vector, chunk in zip(vectors, chunks)
         ]
+        
+        chunks_to_store = [
+            DocumentChunk(
+                id=str(uuid.uuid4()),
+                vector=d["vector"],
+                content=d["content"],
+                metadata=ChunkMetadata(**d["metadata"])
+            )
+            for d in data
+        ]
+        
+        self.vector_store.store(chunks_to_store)
+        return chunks_to_store
