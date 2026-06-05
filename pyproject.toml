@@ -5,6 +5,7 @@ requires-python = ">=3.14"
 dependencies = [
     "anthropic>=0.105.2",
     "fastapi[standard]>=0.136.3",
+    "mistletoe>=1.5.1",
     "ollama>=0.6.2",
     "pydantic-settings>=2.14.1",
 ]

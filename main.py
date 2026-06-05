@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from app.api.routes.chat_routes import chat_router
+from app.api.routes.rag_routes import rag_router
 
 app = FastAPI(title="PFE Legislation Service")
 app.include_router(chat_router, prefix="/api/v1/chat")
+app.include_router(rag_router, prefix="/api/v1/rag")
