@@ -1,10 +1,10 @@
 from qdrant_client import QdrantClient
-from qdrant_client.models import PointStruct, VectorParams, Distance
+from qdrant_client.models import PointStruct, VectorParams, Distance, Filter, FieldCondition, MatchValue
 from app.models.chunk_schema import DocumentChunk
 
 class VectorStore:
     COLLECTION_NAME = "documents-legislatives-import-export"
-    VECTOR_SIZE = 2560  # qwen3-embedding:4b
+    VECTOR_SIZE = 1024  # qwen3-embedding:0.6b
 
     def __init__(self, qdrant_url: str = "http://localhost:6333"):
         self.client = QdrantClient(url=qdrant_url)
@@ -53,3 +53,18 @@ class VectorStore:
             }
             for r in results.points
         ]
+    
+    def is_source_ingested(self, source: str) -> bool:
+        results, _ = self.client.scroll(
+            collection_name=self.COLLECTION_NAME,
+            scroll_filter=Filter(
+                must=[FieldCondition(key="source", match=MatchValue(value=source))]
+            ),
+            limit=1,
+            with_payload=False,
+            with_vectors=False,
+        )
+        return len(results) > 0
+
+    def delete_collection(self):
+        self.client.delete_collection(collection_name=self.COLLECTION_NAME)

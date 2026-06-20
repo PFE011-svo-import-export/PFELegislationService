@@ -37,9 +37,9 @@ services:
       - "11434:11434"
     volumes:
       - legislation-ollama-data:/root/.ollama
-    entrypoint: ["/bin/sh", "-c", "ollama serve & sleep 5 && ollama pull qwen3-embedding:4b && wait"]
+    entrypoint: ["/bin/sh", "-c", "ollama serve & sleep 5 && ollama pull qwen3-embedding:0.6b && wait"]
     healthcheck:
-      test: ["CMD-SHELL", "ollama list | grep -q qwen3-embedding"]
+      test: ["CMD-SHELL", "ollama list | grep -q qwen3-embedding:0.6b"]
       interval: 15s
       timeout: 10s
       retries: 20

@@ -5,6 +5,7 @@ from app.storage.qdrant_vectordb import VectorStore
 import json
 import mistletoe
 import uuid
+import os
 from app.models.chunk_schema import ChunkMetadata, DocumentChunk
 
 class RagService:
@@ -182,3 +183,26 @@ class RagService:
         
         self.vector_store.store(chunks_to_store)
         return chunks_to_store
+    
+    def ingest_folder(self, folder_path: str) -> dict:
+        self.vector_store.ensure_collection()
+        ingested = []
+        skipped = []
+
+        md_files = [f for f in os.listdir(folder_path) if f.endswith(".md")]
+
+        for filename in md_files:
+            if self.vector_store.is_source_ingested(filename):
+                skipped.append(filename)
+                print(f"Skipping already ingested file: {filename}")
+                continue
+
+            filepath = os.path.join(folder_path, filename)
+            self.embed_md_file(filepath)
+            ingested.append(filename)
+            print(f"Ingested: {filename}")
+
+        return {"ingested": ingested, "skipped": skipped}
+
+    def delete_coll(self):
+        self.vector_store.delete_collection()
