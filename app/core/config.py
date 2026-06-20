@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     anthropic_api_key: str
     open_api_key: str = ""
     ollama_base_url: str = "http://localhost:11434"
-    ollama_embed_model: str = "nomic-embed-text"
+    ollama_embed_model: str = "qwen3-embedding:4b"
     qdrant_url: str = "http://localhost:6333"
 
     model_config = {

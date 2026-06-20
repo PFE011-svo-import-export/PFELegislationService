@@ -4,7 +4,7 @@ from app.models.chunk_schema import DocumentChunk
 
 class VectorStore:
     COLLECTION_NAME = "documents-legislatives-import-export"
-    VECTOR_SIZE = 768  # nomic-embed-text
+    VECTOR_SIZE = 2560  # qwen3-embedding:4b
 
     def __init__(self, qdrant_url: str = "http://localhost:6333"):
         self.client = QdrantClient(url=qdrant_url)
