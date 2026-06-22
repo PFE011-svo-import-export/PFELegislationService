@@ -6,8 +6,8 @@ class VectorStore:
     COLLECTION_NAME = "documents-legislatives-import-export"
     VECTOR_SIZE = 1024  # qwen3-embedding:0.6b
 
-    def __init__(self, qdrant_url: str = "http://localhost:6333"):
-        self.client = QdrantClient(url=qdrant_url)
+    def __init__(self, qdrant_url: str = "http://localhost:6333", qdrant_api_key: str | None = None):
+        self.client = QdrantClient(url=qdrant_url, api_key=qdrant_api_key or None)
 
     def ensure_collection(self):
         if not self.client.collection_exists(self.COLLECTION_NAME):

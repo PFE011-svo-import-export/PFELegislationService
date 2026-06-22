@@ -14,4 +14,4 @@ def get_ollama_client() -> OllamaClient:
 
 @lru_cache()
 def get_vector_store() -> VectorStore:
-    return VectorStore(qdrant_url=settings.qdrant_url)
+    return VectorStore(qdrant_url=settings.qdrant_url, qdrant_api_key=settings.qdrant_api_key)
