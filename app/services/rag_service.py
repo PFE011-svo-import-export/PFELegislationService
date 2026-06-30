@@ -106,7 +106,7 @@ class RagService:
         """
         print(f"Parsing and chunking file: {filepath}")
         ast = self.parse_md_file(filepath)
-        source = filepath.split("/")[-1]
+        source = os.path.basename(filepath)
 
         chunks = []
         # Contexte de heading courant par niveau (1..6)
