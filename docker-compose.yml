@@ -5,15 +5,12 @@ services:
     build: .
     ports:
       - "8000:8000"
-    env_file: .env                          # ANTHROPIC_API_KEY, OPEN_API_KEY, etc.
+    env_file: .env                          # ANTHROPIC_API_KEY, QDRANT_HOST/PORT/API_KEY/USE_HTTPS, etc.
     environment:
-      - QDRANT_URL=http://legislation-vector-db:6333       # override localhost URLs from .env
-      - OLLAMA_BASE_URL=http://legislation-ollama:11434
-    depends_on:
-      legislation-vector-db:
-        condition: service_healthy
-      legislation-ollama:
-        condition: service_healthy
+      # Qdrant points to the cloud via QDRANT_* in .env — no local override here.
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434  # use the host's (Windows) Ollama for GPU
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
 
   # Qdrant vector DB
@@ -23,28 +20,12 @@ services:
       - "6333:6333"
       - "6334:6334"
     volumes:
-      - legislation-vector-db-data:/legislation-vector-db/storage
+      - legislation-vector-db-data:/qdrant/storage
     healthcheck:
       test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/6333'"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # Ollama — local embedding server
-  legislation-ollama:
-    image: ollama/ollama:latest
-    ports:
-      - "11434:11434"
-    volumes:
-      - legislation-ollama-data:/root/.ollama
-    entrypoint: ["/bin/sh", "-c", "ollama serve & sleep 5 && ollama pull qwen3-embedding:0.6b && wait"]
-    healthcheck:
-      test: ["CMD-SHELL", "ollama list | grep -q qwen3-embedding:0.6b"]
-      interval: 15s
-      timeout: 10s
-      retries: 20
-      start_period: 60s
-
 volumes:
   legislation-vector-db-data:
-  legislation-ollama-data:

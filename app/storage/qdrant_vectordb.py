@@ -1,13 +1,24 @@
 from qdrant_client import QdrantClient
-from qdrant_client.models import PointStruct, VectorParams, Distance, Filter, FieldCondition, MatchValue
+from qdrant_client.models import PointStruct, VectorParams, Distance, Filter, FieldCondition, MatchValue, PayloadSchemaType
 from app.models.chunk_schema import DocumentChunk
 
 class VectorStore:
     COLLECTION_NAME = "documents-legislatives-import-export"
-    VECTOR_SIZE = 1024  # qwen3-embedding:0.6b
+    VECTOR_SIZE = 2560  # qwen3-embedding:4b
 
-    def __init__(self, qdrant_url: str = "http://localhost:6333", qdrant_api_key: str | None = None):
-        self.client = QdrantClient(url=qdrant_url, api_key=qdrant_api_key or None)
+    def __init__(
+        self,
+        qdrant_host: str = "localhost",
+        qdrant_port: int = 6333,
+        qdrant_api_key: str | None = None,
+        qdrant_use_https: bool = False,
+    ):
+        self.client = QdrantClient(
+            host=qdrant_host,
+            port=qdrant_port,
+            https=qdrant_use_https,
+            api_key=qdrant_api_key or None,
+        )
 
     def ensure_collection(self):
         if not self.client.collection_exists(self.COLLECTION_NAME):
@@ -18,6 +29,13 @@ class VectorStore:
                     distance=Distance.COSINE,
                 ),
             )
+        # Payload index on `source` is required to filter on it (is_source_ingested).
+        # create_payload_index is idempotent, so it's safe to call on every startup.
+        self.client.create_payload_index(
+            collection_name=self.COLLECTION_NAME,
+            field_name="source",
+            field_schema=PayloadSchemaType.KEYWORD,
+        )
 
     def store(self, chunks: list[DocumentChunk]):
         points = [

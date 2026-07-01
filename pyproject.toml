@@ -9,4 +9,5 @@ dependencies = [
     "ollama>=0.6.2",
     "pydantic-settings>=2.14.1",
     "qdrant-client>=1.18.0",
+    "scalar-fastapi>=1.4.4",
 ]
