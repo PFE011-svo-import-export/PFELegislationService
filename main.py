@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from scalar_fastapi import get_scalar_api_reference
 from app.api.routes.chat_routes import chat_router
 from app.api.routes.rag_routes import rag_router
@@ -16,6 +17,16 @@ app = FastAPI(
     version="0.1.0",
     lifespan=lifespan,
 )
+
+# Allow the browser-based RAG viewer (and other clients) to call the API.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(chat_router, prefix="/api/v1/chat")
 app.include_router(rag_router, prefix="/api/v1/rag")
 
