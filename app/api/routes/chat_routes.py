@@ -8,3 +8,7 @@ chat_router = APIRouter()
 def search_traitement_tarifiaires(pays: str, service: ChatService = Depends(get_chat_service)):
     return service.search_traitement_tarifiaires(pays)
 
+@chat_router.get("/exigences/{produit}/{pays}")
+def search_traitement_tarifiaires(produit:str, pays: str, service: ChatService = Depends(get_chat_service)):
+    return service.search_exigences_importation(produit, pays)
+
