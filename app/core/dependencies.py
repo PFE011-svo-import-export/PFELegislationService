@@ -4,6 +4,11 @@ from app.core.config import settings
 from app.storage.qdrant_vectordb import VectorStore
 from functools import lru_cache
 from FlagEmbedding import FlagReranker
+from transformers.utils import logging as hf_logging
+
+# Le tokenizer XLM-Roberta du reranker émet un simple hint de performance (usage de __call__)
+# qui n'a aucun impact fonctionnel : on réduit la verbosité de transformers pour l'éviter.
+hf_logging.set_verbosity_error()
 
 @lru_cache()
 def get_anthropic_client() -> Anthropic:

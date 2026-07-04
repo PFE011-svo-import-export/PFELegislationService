@@ -23,9 +23,15 @@ class RagService:
         response = self.client.embed(model=self.embed_model, input=text)
         return response.embeddings[0]
 
-    def embed_batch(self, texts: list[str]) -> list[list[float]]:
-        response = self.client.embed(model=self.embed_model, input=texts)
-        return response.embeddings
+    def embed_batch(self, texts: list[str], batch_size: int = 32) -> list[list[float]]:
+        # On découpe en sous-lots : envoyer des milliers de textes en une seule requête
+        # fait saturer (OOM) le runner d'embedding d'Ollama sur GPU.
+        embeddings: list[list[float]] = []
+        for start in range(0, len(texts), batch_size):
+            batch = texts[start:start + batch_size]
+            response = self.client.embed(model=self.embed_model, input=batch)
+            embeddings.extend(response.embeddings)
+        return embeddings
     
     def embed_sparse_batch(self, texts: list[str]) -> list[dict]:
         """Retourne une liste de vecteurs creux {indices, values} pour chaque texte."""
@@ -72,13 +78,18 @@ class RagService:
         parts = [self._extract_text(child) for child in node.get("children", []) or []]
         return "[Note] " + " ".join(parts).strip()
 
-    def _serialize_table(self, node: dict) -> str:
+    def _serialize_table_rows(self, node: dict) -> list[str]:
+        """Retourne une ligne de texte par ligne du tableau, ex:
+        "Pays: Togo, NPF: X, TPG: X, TPMD: X, Autres: ..."."""
         headers = [self._extract_text(cell) for cell in node["header"].get("children", [])]
-        lines = []
+        rows = []
         for row in node.get("children", []):
             cells = [self._extract_text(cell) for cell in row.get("children", [])]
-            lines.append(", ".join(f"{h}: {v}" for h, v in zip(headers, cells)))
-        return "\n".join(lines)
+            rows.append(", ".join(f"{h}: {v}" for h, v in zip(headers, cells)))
+        return rows
+
+    def _serialize_table(self, node: dict) -> str:
+        return "\n".join(self._serialize_table_rows(node))
 
     def _serialize_code_fence(self, node: dict) -> str:
         lang = node.get("language", "")
@@ -147,6 +158,14 @@ class RagService:
                 # Mettre à jour le stack et effacer les niveaux enfants
                 heading_stack[level] = title
                 heading_stack = {k: v for k, v in heading_stack.items() if k <= level}
+            elif t == "Table":
+                # Un tableau de données est éclaté en un chunk par ligne : sinon une requête
+                # ciblée (ex: "Togo") est noyée dans un chunk contenant des dizaines de lignes,
+                # ce qui dilue l'embedding dense et écrase le signal BM25.
+                flush_chunk()  # clôture le contenu textuel qui précède le tableau
+                for row_text in self._serialize_table_rows(node):
+                    current_content_lines.append(row_text)
+                    flush_chunk()
             else:
                 serialized = self._serialize_node(node)
                 if serialized:
@@ -222,7 +241,9 @@ class RagService:
         en conservant source/heading et en remplaçant le score par le score de reranking."""
         if not results:
             return []
-        pairs = [[prompt, r["content"]] for r in results]
+        # Même logique que rerank_candidates : on donne le heading_path au cross-encoder,
+        # sinon les lignes très laconiques (ex. « Pays: Togo, NPF: X... ») perdent leur contexte.
+        pairs = [[prompt, f"{r['heading_path']}\n{r['content']}"] for r in results]
         scores = self.reranker.compute_score(pairs, normalize=True, batch_size=16)
         reranked = sorted(
             ({**r, "score": float(s)} for r, s in zip(results, scores)),
@@ -273,37 +294,41 @@ class RagService:
         ]
         return "\n\n".join(sections)
 
-    def retrieve(self, prompt: str) -> list[str]:
+    def retrieve(self, prompt: str) -> list[dict]:
         prompt_dense = self.embed(prompt)
         prompt_sparse = self.embed_sparse_batch([prompt])[0]
 
-        print("Retrieving the candidates from db...")
         initial_candidates = self.vector_store.hybrid_search(prompt_dense, prompt_sparse)
         #initial_candidates = self.vector_store.search(prompt_dense, 15)
 
-        print(f"******************* Initial candidates ********************** \n")
+        reranked = self.rerank_candidates(prompt, initial_candidates, topk=5)
 
-        for c in initial_candidates:
-            print(f"[{c["score"]}]  {c["content"]} \n")
-        
-        content = [item["content"] for item in initial_candidates]
+        return reranked
 
-        return self.rerank_candidates(prompt, content, 5)
+    # Score de reranking minimal (normalisé) pour qu'un candidat soit transmis au LLM.
+    # En dessous, le passage n'est pas assez pertinent et ne fait que polluer la réponse.
+    RERANK_SCORE_THRESHOLD = 0.08
 
-    def rerank_candidates(self, prompt: str, initial_candidates: list[str], topk: int) -> list[str]:
-        pairs = [[prompt, candidate] for candidate in initial_candidates]
+    def rerank_candidates(self, prompt: str, initial_candidates: list[dict], topk: int) -> list[dict]:
+        # On fournit le heading_path au cross-encoder en plus du content : le contexte
+        # de la section (ex. « Liste des Pays et Traitements Tarifaires... ») porte un
+        # signal essentiel que le content, souvent très laconique, ne contient pas.
+        pairs = [
+            [prompt, f"{candidate['heading_path']}\n{candidate['content']}"]
+            for candidate in initial_candidates
+        ]
 
         scores = self.reranker.compute_score(pairs, normalize=True, batch_size=16)
 
-        # On trie les candidats par score décroissant
+        # On trie les candidats par score décroissant, puis on écarte les passages
+        # sous le seuil de pertinence avant d'en garder au plus topk.
         reranked = sorted(zip(scores, initial_candidates), key=lambda x: x[0], reverse=True)
 
-        print(f"******************* Reranked candidates ********************** \n")
-
-        for score, candidate in reranked:
-            print(f"{score:.4f} — {candidate}")
-        
-        top_candidates = [candidate for score, candidate in reranked[:topk]]
+        top_candidates = [
+            {"content": candidate["content"], "source": candidate["source"]}
+            for score, candidate in reranked[:topk]
+            if score >= self.RERANK_SCORE_THRESHOLD
+        ]
         return top_candidates
 
     def delete_coll(self):

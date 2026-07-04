@@ -27,7 +27,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(chat_router, prefix="/api/v1/chat")
+app.include_router(chat_router, prefix="/api/v1/legislation")
 app.include_router(rag_router, prefix="/api/v1/rag")
 
 

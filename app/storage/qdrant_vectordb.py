@@ -48,7 +48,7 @@ class VectorStore:
             field_schema=PayloadSchemaType.KEYWORD,
         )
 
-    def store(self, chunks: list[DocumentChunk]):
+    def store(self, chunks: list[DocumentChunk], batch_size: int = 128):
         points = [
             PointStruct(
                 id=chunk.id,
@@ -68,10 +68,13 @@ class VectorStore:
             )
             for chunk in chunks
         ]
-        self.client.upsert(
-            collection_name=self.COLLECTION_NAME,
-            points=points
-        )
+        # Upsert par lots : un fichier peut produire des milliers de points, et une seule
+        # requête trop volumineuse fait fermer la connexion côté Qdrant.
+        for start in range(0, len(points), batch_size):
+            self.client.upsert(
+                collection_name=self.COLLECTION_NAME,
+                points=points[start:start + batch_size],
+            )
 
     def search(self, query_vector: list[float], top_k: int = 10) -> list[dict]:
         """Recherche dense uniquement — conservée pour compatibilité/debug."""
@@ -83,7 +86,7 @@ class VectorStore:
         )
         return self._format_results(results.points)
 
-    def hybrid_search(self, query_vector: list[float], query_sparse: dict, top_k: int = 10, prefetch_limit: int = 25) -> list[dict]:
+    def hybrid_search(self, query_vector: list[float], query_sparse: dict, top_k: int = 5, prefetch_limit: int = 15) -> list[dict]:
         """Recherche hybride dense + BM25, fusionnée avec Reciprocal Rank Fusion."""
         results = self.client.query_points(
             collection_name=self.COLLECTION_NAME,
