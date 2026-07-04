@@ -27,4 +27,5 @@ def get_reranker_model() -> FlagReranker:
     return FlagReranker(
         settings.reranker_model,
         use_fp16=True,
+        devices="cuda",
     )

@@ -1,5 +1,8 @@
 from qdrant_client import QdrantClient
-from qdrant_client.models import PointStruct, VectorParams, Distance, Filter, FieldCondition, MatchValue, PayloadSchemaType
+from qdrant_client.models import (
+    PointStruct, VectorParams, Distance, Filter, FieldCondition, MatchValue, PayloadSchemaType,
+    SparseVectorParams, SparseVector, Modifier, Prefetch, FusionQuery, Fusion,
+)
 from app.models.chunk_schema import DocumentChunk
 
 class VectorStore:
@@ -24,10 +27,18 @@ class VectorStore:
         if not self.client.collection_exists(self.COLLECTION_NAME):
             self.client.create_collection(
                 collection_name=self.COLLECTION_NAME,
-                vectors_config=VectorParams(
-                    size=self.VECTOR_SIZE,
-                    distance=Distance.COSINE,
-                ),
+                # Vecteurs nommés : "dense" pour l'embedding sémantique, "bm25" pour le sparse
+                vectors_config={
+                    "dense": VectorParams(
+                        size=self.VECTOR_SIZE,
+                        distance=Distance.COSINE,
+                    ),
+                },
+                sparse_vectors_config={
+                    "bm25": SparseVectorParams(
+                        modifier=Modifier.IDF,  # nécessaire pour un vrai scoring BM25 (sinon c'est juste du term frequency)
+                    ),
+                },
             )
         # Payload index on `source` is required to filter on it (is_source_ingested).
         # create_payload_index is idempotent, so it's safe to call on every startup.
@@ -41,7 +52,13 @@ class VectorStore:
         points = [
             PointStruct(
                 id=chunk.id,
-                vector=chunk.vector,
+                vector={
+                    "dense": chunk.vector,
+                    "bm25": SparseVector(
+                        indices=chunk.sparse_vector["indices"],
+                        values=chunk.sparse_vector["values"],
+                    ),
+                },
                 payload={
                     "content": chunk.content,
                     "source": chunk.metadata.source,
@@ -57,11 +74,40 @@ class VectorStore:
         )
 
     def search(self, query_vector: list[float], top_k: int = 10) -> list[dict]:
+        """Recherche dense uniquement — conservée pour compatibilité/debug."""
         results = self.client.query_points(
             collection_name=self.COLLECTION_NAME,
             query=query_vector,
+            using="dense",  # requis maintenant que les vecteurs sont nommés
             limit=top_k
         )
+        return self._format_results(results.points)
+
+    def hybrid_search(self, query_vector: list[float], query_sparse: dict, top_k: int = 10, prefetch_limit: int = 25) -> list[dict]:
+        """Recherche hybride dense + BM25, fusionnée avec Reciprocal Rank Fusion."""
+        results = self.client.query_points(
+            collection_name=self.COLLECTION_NAME,
+            prefetch=[
+                Prefetch(
+                    query=query_vector,
+                    using="dense",
+                    limit=prefetch_limit,
+                ),
+                Prefetch(
+                    query=SparseVector(
+                        indices=query_sparse["indices"],
+                        values=query_sparse["values"],
+                    ),
+                    using="bm25",
+                    limit=prefetch_limit,
+                ),
+            ],
+            query=FusionQuery(fusion=Fusion.RRF),
+            limit=top_k,
+        )
+        return self._format_results(results.points)
+
+    def _format_results(self, points) -> list[dict]:
         return [
             {
                 "content": r.payload["content"],
@@ -69,9 +115,9 @@ class VectorStore:
                 "source": r.payload["source"],
                 "score": r.score,
             }
-            for r in results.points
+            for r in points
         ]
-    
+
     def is_source_ingested(self, source: str) -> bool:
         results, _ = self.client.scroll(
             collection_name=self.COLLECTION_NAME,

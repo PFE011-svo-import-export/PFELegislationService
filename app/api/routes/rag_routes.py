@@ -1,6 +1,11 @@
 from fastapi import APIRouter, Depends
+from pydantic import BaseModel
 from app.api.dependencies import get_rag_service, get_vector_store
 from app.core.config import settings
+
+class CompareSearchRequest(BaseModel):
+    prompt: str
+    top_k: int = 10
 
 rag_router = APIRouter()
 
@@ -22,3 +27,8 @@ def check_ingested(filename: str, vector_store = Depends(get_vector_store)):
 @rag_router.delete("/collections")
 def delete_coll(rag_service = Depends(get_rag_service)):
     rag_service.delete_coll()
+
+@rag_router.post("/compare")
+def compare_search(req: CompareSearchRequest, rag_service = Depends(get_rag_service)):
+    output_path = rag_service.compare_search(req.prompt, top_k=req.top_k)
+    return {"output_path": output_path}

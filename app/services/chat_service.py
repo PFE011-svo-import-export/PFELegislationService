@@ -29,5 +29,3 @@ class ChatService:
         )
 
         return response.parsed_output
-
-        return ""
