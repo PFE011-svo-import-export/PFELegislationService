@@ -56,7 +56,7 @@ class VectorStore:
             points=points
         )
 
-    def search(self, query_vector: list[float], top_k: int = 3) -> list[dict]:
+    def search(self, query_vector: list[float], top_k: int = 10) -> list[dict]:
         results = self.client.query_points(
             collection_name=self.COLLECTION_NAME,
             query=query_vector,

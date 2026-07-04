@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     qdrant_api_key: str = ""
     qdrant_use_https: bool = False
     documents_path: str = "app/documents"
+    reranker_model: str = "BAAI/bge-reranker-v2-m3"
 
     model_config = {
         "env_file": ".env",

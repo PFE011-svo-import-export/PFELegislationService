@@ -7,12 +7,14 @@ import mistletoe
 import uuid
 import os
 from app.models.chunk_schema import ChunkMetadata, DocumentChunk
+from FlagEmbedding import FlagReranker
 
 class RagService:
-    def __init__(self, client: OllamaClient, embed_model: str, vector_store: VectorStore):
+    def __init__(self, client: OllamaClient, embed_model: str, vector_store: VectorStore, reranker_model: FlagReranker):
         self.client = client
         self.embed_model = embed_model
         self.vector_store = vector_store
+        self.reranker = reranker_model
 
      # ─── Embedding ────────────────────────────────────────────────────────────
     def embed(self, text: str) -> list[float]:
@@ -91,18 +93,6 @@ class RagService:
         Parse un fichier .md et retourne une liste de chunks avec métadonnées.
         Chaque chunk correspond à une section délimitée par un heading.
 
-        Retourne:
-            [
-                {
-                    "content": "...",
-                    "metadata": {
-                        "source": "fichier.md",
-                        "heading_path": "H1 > H2",
-                        "chunk_index": 0
-                    }
-                },
-                ...
-            ]
         """
         print(f"Parsing and chunking file: {filepath}")
         ast = self.parse_md_file(filepath)
@@ -203,6 +193,38 @@ class RagService:
             print(f"Ingested: {filename}")
 
         return {"ingested": ingested, "skipped": skipped}
+    
+
+    def retrieve(self, prompt: str) -> list[str]:
+        prompt_embedding = self.embed(prompt)
+        print("Retrieving the candidates from db...")
+        initial_candidates = self.vector_store.search(prompt_embedding, 10)
+
+        print(f"******************* Initial candidates ********************** \n")
+
+        for c in initial_candidates:
+            print(f"[{c["score"]}]  {c["content"]} \n")
+        
+        content = [item["content"] for item in initial_candidates]
+
+        return content
+        return self.rerank_candidates(prompt, content, 5)
+
+    def rerank_candidates(self, prompt: str, initial_candidates: list[str], topk: int) -> list[str]:
+        pairs = [[prompt, candidate] for candidate in initial_candidates]
+
+        scores = self.reranker.compute_score(pairs, normalize=True, batch_size=16)
+
+        # On trie les candidats par score décroissant
+        reranked = sorted(zip(scores, initial_candidates), key=lambda x: x[0], reverse=True)
+
+        print(f"******************* Reranked candidates ********************** \n")
+
+        for score, candidate in reranked:
+            print(f"{score:.4f} — {candidate}")
+        
+        top_candidates = [candidate for score, candidate in reranked[:topk]]
+        return top_candidates
 
     def delete_coll(self):
         self.vector_store.delete_collection()

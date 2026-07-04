@@ -5,9 +5,11 @@ requires-python = ">=3.14"
 dependencies = [
     "anthropic>=0.105.2",
     "fastapi[standard]>=0.136.3",
+    "flagembedding>=1.4.0",
     "mistletoe>=1.5.1",
     "ollama>=0.6.2",
     "pydantic-settings>=2.14.1",
     "qdrant-client>=1.18.0",
     "scalar-fastapi>=1.4.4",
+    "transformers>=4.44.2,<5.0.0",
 ]
