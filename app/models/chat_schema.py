@@ -15,7 +15,7 @@ class InformationMerchandise(BaseModel):
 
 class TraitementTarifiare(BaseModel):
     """"""
-    traitement_tarifiaire_applicable: str
+    traitement_tarifiaire_applicable: list[str]
     code_traitement_tarifiaire: str
     taux_tariff: float
     explication_traitement: str

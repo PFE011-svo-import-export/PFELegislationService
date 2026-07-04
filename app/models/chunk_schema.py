@@ -8,5 +8,6 @@ class ChunkMetadata(BaseModel):
 class DocumentChunk(BaseModel):
     id: str
     vector: list[float]
+    sparse_vector: dict
     content: str
     metadata: ChunkMetadata
