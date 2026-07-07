@@ -58,3 +58,36 @@ class ChatService:
         print(f"LLM generation took {llm_elapsed:.2f}s")
 
         return response.parsed_output
+
+    def answer_prompt(self, prompt: str) -> dict:
+        """Répond à une question libre de l'utilisateur en langage naturel,
+        en se basant sur les chunks récupérés. Utilisé par l'interface de test."""
+        print(f"Recieved free-text prompt: {prompt}")
+
+        candidates = self.rag_service.retrieve(prompt)
+
+        documentation = "\n\n".join(
+            f"[Source: {c['source']}]\n{c['content']}"
+            for c in candidates
+        )
+
+        augmented_prompt = f"Question: {prompt}\n\nDocumentation:\n{documentation}"
+
+        response = self.client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=2000,
+            output_config={"effort": "low"},
+            system='''
+            Tu es un assistant spécialisé en législation d'import-export de marchandises au Canada.
+            Réponds à la question de l'utilisateur en te basant UNIQUEMENT sur la documentation fournie.
+            Si la documentation ne contient pas l'information nécessaire, dis-le clairement et n'invente rien.
+            Réponds en français, de manière claire et concise.
+            ''',
+            messages=[{"role": "user", "content": augmented_prompt}],
+        )
+
+        answer = next((block.text for block in response.content if block.type == "text"), "")
+        # Sources uniques, dans l'ordre de pertinence renvoyé par le reranker.
+        sources = list(dict.fromkeys(c["source"] for c in candidates))
+
+        return {"answer": answer, "sources": sources}
