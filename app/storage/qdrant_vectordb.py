@@ -7,7 +7,7 @@ from app.models.chunk_schema import DocumentChunk
 
 class VectorStore:
     COLLECTION_NAME = "documents-legislatives-import-export"
-    VECTOR_SIZE = 2560  # qwen3-embedding:4b
+    VECTOR_SIZE = 3072
 
     def __init__(
         self,

@@ -1,4 +1,3 @@
-from ollama import Client as OllamaClient
 from mistletoe import Document
 from mistletoe.ast_renderer import ASTRenderer
 from app.storage.qdrant_vectordb import VectorStore
@@ -7,21 +6,23 @@ import mistletoe
 import uuid
 import os
 from app.models.chunk_schema import ChunkMetadata, DocumentChunk
-from FlagEmbedding import FlagReranker
 from fastembed import SparseTextEmbedding
+from openai import OpenAI
+import cohere
 
 class RagService:
-    def __init__(self, client: OllamaClient, embed_model: str, vector_store: VectorStore, reranker_model: FlagReranker):
-        self.client = client
+    def __init__(self, client: OpenAI, embed_model: str, vector_store: VectorStore, reranker_model: cohere.ClientV2):
+        self.embedding_client = client
         self.embed_model = embed_model
         self.vector_store = vector_store
         self.reranker = reranker_model
+        self.reranker_model_name = "rerank-v4.0-fast"
         self.sparse_model = SparseTextEmbedding(model_name="Qdrant/bm25")
 
      # ─── Embedding ────────────────────────────────────────────────────────────
     def embed(self, text: str) -> list[float]:
-        response = self.client.embed(model=self.embed_model, input=text)
-        return response.embeddings[0]
+        response = self.embedding_client.embeddings.create(model=self.embed_model, input=text)
+        return response.data[0].embedding
 
     def embed_batch(self, texts: list[str], batch_size: int = 32) -> list[list[float]]:
         # On découpe en sous-lots : envoyer des milliers de textes en une seule requête
@@ -29,8 +30,8 @@ class RagService:
         embeddings: list[list[float]] = []
         for start in range(0, len(texts), batch_size):
             batch = texts[start:start + batch_size]
-            response = self.client.embed(model=self.embed_model, input=batch)
-            embeddings.extend(response.embeddings)
+            response = self.embedding_client.embeddings.create(model=self.embed_model, input=batch)
+            embeddings.extend([item.embedding for item in response.data])
         return embeddings
     
     def embed_sparse_batch(self, texts: list[str]) -> list[dict]:
@@ -243,14 +244,19 @@ class RagService:
             return []
         # Même logique que rerank_candidates : on donne le heading_path au cross-encoder,
         # sinon les lignes très laconiques (ex. « Pays: Togo, NPF: X... ») perdent leur contexte.
-        pairs = [[prompt, f"{r['heading_path']}\n{r['content']}"] for r in results]
-        scores = self.reranker.compute_score(pairs, normalize=True, batch_size=16)
-        reranked = sorted(
-            ({**r, "score": float(s)} for r, s in zip(results, scores)),
-            key=lambda r: r["score"],
-            reverse=True,
+        texts = [f"{r['heading_path']}\n{r['content']}" for r in results]
+        response = self.reranker.rerank(
+            model=self.reranker_model_name,
+            query=prompt,
+            documents=texts,
+            top_n=topk,
         )
-        return reranked[:topk]
+        # Cohere renvoie les résultats déjà triés par pertinence décroissante ;
+        # on remplace le score hybride par le score de reranking.
+        return [
+            {**results[res.index], "score": float(res.relevance_score)}
+            for res in response.results
+        ]
 
     def _format_comparison_markdown(self, prompt: str, top_k: int, dense_results: list[dict], hybrid_results: list[dict], reranked_results: list[dict]) -> str:
         def escape(text: str) -> str:
@@ -305,31 +311,31 @@ class RagService:
 
         return reranked
 
-    # Score de reranking minimal (normalisé) pour qu'un candidat soit transmis au LLM.
-    # En dessous, le passage n'est pas assez pertinent et ne fait que polluer la réponse.
-    RERANK_SCORE_THRESHOLD = 0.08
-
     def rerank_candidates(self, prompt: str, initial_candidates: list[dict], topk: int) -> list[dict]:
+        if not initial_candidates:
+            return []
         # On fournit le heading_path au cross-encoder en plus du content : le contexte
         # de la section (ex. « Liste des Pays et Traitements Tarifaires... ») porte un
         # signal essentiel que le content, souvent très laconique, ne contient pas.
-        pairs = [
-            [prompt, f"{candidate['heading_path']}\n{candidate['content']}"]
-            for candidate in initial_candidates
-        ]
+        texts = [f"{c['heading_path']}\n{c['content']}" for c in initial_candidates]
 
-        scores = self.reranker.compute_score(pairs, normalize=True, batch_size=16)
+        response = self.reranker.rerank(
+            model=self.reranker_model_name,
+            query=prompt,
+            documents=texts,
+            top_n=topk,
+        )
 
-        # On trie les candidats par score décroissant, puis on écarte les passages
-        # sous le seuil de pertinence avant d'en garder au plus topk.
-        reranked = sorted(zip(scores, initial_candidates), key=lambda x: x[0], reverse=True)
+        # Cohere renvoie les résultats déjà triés par pertinence décroissante et
+        # limités à top_n. Chaque résultat référence le candidat d'origine par son
+        # index dans `texts` ; on remappe en conservant l'ordre.
+        reranked: list[dict] = []
+        for result in response.results:
+            candidate = initial_candidates[result.index]
+            candidate["rerank_score"] = result.relevance_score
+            reranked.append(candidate)
 
-        top_candidates = [
-            {"content": candidate["content"], "source": candidate["source"]}
-            for score, candidate in reranked[:topk]
-            if score >= self.RERANK_SCORE_THRESHOLD
-        ]
-        return top_candidates
+        return reranked
 
     def delete_coll(self):
         self.vector_store.delete_collection()
