@@ -116,7 +116,6 @@ class RagService:
         Chaque chunk correspond à une section délimitée par un heading.
 
         """
-        print(f"Parsing and chunking file: {filepath}")
         ast = self.parse_md_file(filepath)
         source = os.path.basename(filepath)
 

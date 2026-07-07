@@ -21,19 +21,20 @@ class ChatService:
         return self.generate(prompt, ExigencesImportation)
 
     def generate(self, prompt: str, output_model: Type[T]) -> T:
-        print(f"Recieved prompt: {prompt}")
-
         retrieval_start = time.perf_counter()
         candidates = self.rag_service.retrieve(prompt)
         retrieval_elapsed = time.perf_counter() - retrieval_start
         print(f"Retrieval took {retrieval_elapsed:.2f}s")
 
+        count = self.client.messages.count_tokens(
+            model="claude-sonnet-4-6", messages=[{"role": "user", "content": prompt}]
+        )
+
+        print(f"Total prompt tokens: {count.input_tokens}")
         documentation = "\n\n".join(
             f"[Source: {c['source']}]\n{c['content']}"
             for c in candidates
         )
-
-        print(f"candidates: {documentation}")
 
         augmented_prompt = f'''
 
@@ -55,6 +56,11 @@ class ChatService:
             output_format=output_model,
         )
         llm_elapsed = time.perf_counter() - llm_start
+
+        
+        print(f"Total input tokens: {response.usage.input_tokens}")
+        print(f"Total output tokens: {response.usage.output_tokens}")
+
         print(f"LLM generation took {llm_elapsed:.2f}s")
 
         return response.parsed_output
@@ -62,7 +68,6 @@ class ChatService:
     def answer_prompt(self, prompt: str) -> dict:
         """Répond à une question libre de l'utilisateur en langage naturel,
         en se basant sur les chunks récupérés. Utilisé par l'interface de test."""
-        print(f"Recieved free-text prompt: {prompt}")
 
         candidates = self.rag_service.retrieve(prompt)
 
