@@ -1,6 +1,8 @@
+import traceback
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from scalar_fastapi import get_scalar_api_reference
 from app.api.routes.chat_routes import chat_router
 from app.api.routes.rag_routes import rag_router
@@ -26,6 +28,25 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Handler global : renvoie l'erreur réelle (type + message + traceback) au lieu d'un
+# « Internal Server Error » opaque. Il attrape aussi les exceptions levées pendant la
+# construction des dépendances (ex: échec d'init du pipeline RAG), ce qu'un try/except
+# dans le corps d'une route ne pourrait pas faire.
+# NOTE: le traceback est exposé pour faciliter le debug de ce projet de test —
+# à retirer (ou masquer derrière un flag DEBUG) avant une vraie mise en production.
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    traceback.print_exc()  # trace complète dans les logs Render
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": type(exc).__name__,
+            "detail": str(exc),
+            "traceback": traceback.format_exc().splitlines()[-8:],
+        },
+    )
+
 
 app.include_router(chat_router, prefix="/api/v1/legislation")
 app.include_router(rag_router, prefix="/api/v1/rag")
