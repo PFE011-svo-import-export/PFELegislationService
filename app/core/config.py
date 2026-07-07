@@ -4,15 +4,14 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     service_name: str = "PFE Legislation Service"
     anthropic_api_key: str
-    open_api_key: str = ""
-    ollama_base_url: str = "http://localhost:11434"
-    ollama_embed_model: str = "qwen3-embedding:4b"
+    openai_api_key: str = ""
+    openai_api_model: str = "text-embedding-3-large"
     qdrant_host: str = "localhost"
     qdrant_port: int = 6333
     qdrant_api_key: str = ""
     qdrant_use_https: bool = False
     documents_path: str = "app/documents"
-    reranker_model: str = "BAAI/bge-reranker-v2-m3"
+    cohere_api_key: str = ""
 
     model_config = {
         "env_file": ".env",
