@@ -48,22 +48,95 @@ Utilisé pour la compréhension et recherche de mots clés
 
 ##### Reranking
 
+![Description de l'image](docs/Images/RAG%20-%20Retrieval%20phase.jpg)
+
 ## Pile technologique utilisé
 
 ## Diagrames
 
 ### Diagramme déploiement
 
+Ce diagramme a pour but de présenter les differents services impliqués dans ce projet et les intéractions entre eux.
+
+![Description de l'image](docs/Images/deployment.png)
+
 ## Les coûts associés
+
+Les coûts du système se répartissent en deux familles distinctes:
+
+1. **Les coûts d'hébergement (infrastructure)**, qui sont fixes et récurrents à chaque mois, peu importe le volume d'utilisation.
+2. **Les coûts d'inférence des modèles d'IA**, qui sont variables et proportionnels à l'usage réel (nombre de documents ingérés, nombre de questions posées).
+
+### Coûts d'hébergement
+
+L'ensemble des composants du système est hébergé sur Render, à l'exception de la base vectorielle qui utilise l'offre gratuite de Qdrant Cloud.
+
+| Composant | Hébergement | Coût mensuel |
+| --- | --- | --- |
+| Service RAG (FastAPI) | Render | 7 $ |
+| Base de données relationnelle (PostgreSQL) | Render Basic 1 Go | 19 $ |
+| Base de données vectorielle (Qdrant) | Qdrant Cloud (free tier) | Gratuit |
+| **Total** | | **26 $ / mois** |
 
 ### Évaluation des coûts services externe vs open source
 
+Une décision d'architecture importante a été de déterminer si les modèles d'embedding et de reranking devaient être opérés en interne (modèles open source servis par Ollama) ou consommés via des services externes (OpenAI et Cohere). Les deux approches ont été évaluées sur la base du coût total de possession.
+
 #### Coûts d'utilisation des services externe
+
+Les services externes sont facturés à l'usage, sans coût fixe. Aucune ressource de calcul n'a besoin d'être provisionnée ni maintenue.
+
+| Service | Rôle dans le pipeline | Tarif |
+| --- | --- | --- |
+| OpenAI `text-embedding-3-large` | Vectorisation dense (ingestion et requêtes) | 0,13 $ / 1 M tokens |
+| Cohere `rerank-v4.0-fast` | Reranking des candidats | 2,00 $ / 1 000 recherches |
+| Claude Sonnet 4.6 | Génération de la réponse finale | 3 $ / 1 M tokens en entrée, 15 $ / 1 M tokens en sortie |
+| BM25 (fastembed, exécuté localement) | Vectorisation sparse | Gratuit |
 
 #### Coûts de déploiment et infra pour open source (Ollama)
 
+Servir soi même les modèles élimine la facturation à l'usage, mais impose de provisionner une machine capable de les faire tourner. Le tableau ci dessous compare les options d'hébergement pour le modèle d'embedding `qwen3-embedding`, dans ses deux tailles.
+
+| Modèle | Render (CPU seulement, aucune option GPU) | Azure, VM CPU | Azure, VM GPU |
+| --- | --- | --- | --- |
+| `qwen3-embedding:0.6b` (~639 Mo) | Standard: 25 $/mois (2 Go RAM, 1 CPU). Le palier Starter (7 $/mois, 512 Mo) est insuffisant une fois ajoutée la surcharge du runtime d'Ollama. | D2s_v5: environ 70 à 90 $/mois (2 vCPU, 8 Go RAM), largement surdimensionné pour un modèle 0.6b. | Non pertinent: le modèle 0.6b tourne convenablement sur CPU. |
+| `qwen3-embedding:4b` (~2,5 Go) | Pro Plus: 175 $/mois (8 Go RAM, 4 CPU) recommandé pour avoir de la marge. L'inférence CPU reste nettement plus lente au moment de la requête. | D2s_v5: environ 70 à 90 $/mois (8 Go RAM), fonctionnel mais limité par le CPU, avec une latence comparable au palier Pro Plus de Render. | NC4as_T4_v3: environ 384 $/mois (GPU T4), nécessaire pour obtenir une latence d'embedding acceptable en temps réel. |
+
+Le reranking en interne pose une contrainte supplémentaire. Le modèle `BAAI/bge-reranker-v2-m3` pèse 2,3 Go et se heurte à deux limites sur l'infrastructure actuelle:
+
+1. **Absence de GPU (CUDA)**, indispensable pour accélérer le passage du cross encoder sur les candidats et garder une latence acceptable.
+2. **Mémoire vive**, le modèle exigeant une quantité de RAM que les paliers d'hébergement économiques ne fournissent pas.
+
+À noter que le passage des vecteurs denses vers OpenAI a fortement allégé l'empreinte du service RAG: la recherche hybride fonctionne désormais sans difficulté sur le CPU de base de Render, alors que l'approche entièrement locale demandait auparavant de 7 à 8 Go de RAM. Le reranker demeure le seul composant qui justifierait encore une machine dédiée.
+
 #### Verdict
+
+L'approche par services externes a été retenue. Le coût d'inférence réel du système se situe autour de quelques dollars par mois pour un volume d'utilisation typique, alors que la plus économique des configurations open source viables ajouterait au minimum 25 $ par mois de coût fixe, et davantage encore dès qu'un GPU devient nécessaire pour le reranker. Le point de bascule financier ne serait atteint qu'à un volume de requêtes très supérieur à celui du projet, et il faudrait de surcroît absorber le coût d'exploitation de l'infrastructure. Les services externes offrent également une qualité de modèle supérieure, une latence stable et aucune maintenance.
 
 ### Phase ingestion complet
 
+Le pipeline d'ingestion complet prend environ 3 minutes et 13 secondes et n'est exécuté que deux fois par mois, la législation évoluant peu fréquemment.
+
+| Métrique | Valeur |
+| --- | --- |
+| Chunks total dans Qdrant | 4 311 |
+| Tokens d'embedding total | 347 596 |
+| Moyenne de tokens par chunk | 80,6 |
+
+Coût d'un cycle d'ingestion complet: 347 596 tokens × 0,13 $ / 1 M ≈ **0,045 $**, soit environ **0,09 $ par mois** pour les deux exécutions. La vectorisation sparse (BM25) est calculée localement et n'engendre aucun coût.
+
 ### Prompt + réponse
+
+Coût d'une question suivie de sa réponse, mesuré sur le premier endpoint.
+
+| Composante | Quantité | Coût |
+| --- | --- | --- |
+| Embedding du prompt (OpenAI) | 21 tokens | 0,000003 $ |
+| Reranking (Cohere) | 1 unité de recherche | 0,0020 $ |
+| Génération, entrée (Claude) | 2 368 tokens × 3 $ / 1 M | 0,000308 $ |
+| Génération, sortie (Claude) | 196 tokens × 15 $ / 1 M | 0,00294 $ |
+| **Total** | | **0,005251 $** |
+
+Une requête complète revient donc à environ un demi cent. Le reranking (0,0020 $) et la génération en sortie (0,00294 $) représentent à eux seuls plus de 94 % du coût, tandis que l'embedding du prompt est négligeable.
+
+Il faut souligner que les coûts unitaires décroissent de façon exponentielle inverse avec le volume: la portion fixe de l'ingestion est amortie sur l'ensemble des requêtes, si bien que le coût moyen par question tend vers le coût marginal d'inférence à mesure que l'utilisation augmente. À titre indicatif, pour 1 000 questions par mois, le coût total du système s'établit autour de 33 $ d'hébergement plus 5,34 $ d'inférence, soit environ **38 $ par mois**.

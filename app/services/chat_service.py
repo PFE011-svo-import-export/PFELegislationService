@@ -13,7 +13,7 @@ class ChatService:
         self.rag_service = rag_service
     
     def search_traitement_tarifiaires(self, pays: str) -> TraitementTarifiare:
-        prompt = f"Traitements tarifiaires applicables au {pays}?"
+        prompt = f"Traitements tarifaires applicables au {pays}?"
         return self.generate(prompt, TraitementTarifiare)
     
     def search_exigences_importation(self, produit: str, pays_importation: str) -> ExigencesImportation:
