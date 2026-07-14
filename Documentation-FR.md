@@ -6,6 +6,8 @@ Retrieval-Augmented Generation (RAG) est une architecture (ou technique) qui am�
 
 ## Problèmes que le RAG vient résoudre dans le cadre de notre projet?
 
+L'objectif du RAG dans ce projet est d'accélérer la recherche de réglementations concernant un produit spécifique et les pays partenaires d'importation ou d'exportation. Sans cette technologie, les membres du CAPD devraient effectuer manuellement des recherches préalables à travers des milliers de pages réparties dans de multiples documents, puis alimenter la base de données. Grâce au RAG et aux modèles structurés Pydantic, nous pouvons en revanche demander à l'IA d'extraire les informations nécessaires sous une forme structurée ; cela permet de les traiter directement et d'alimenter la base de données via un flux entièrement automatisé.
+
 ## Les 2 phases du RAG
 
 RAG est divisé en deux phases importantes et complémentaire. La phase d'ingestion des données est le processus dont les sources d'informations sont transformés et stocké dans la base de données vectorielle. La phase de retrieval est le processus dont on récupère les meilleurs extraits d'informations et pertinent pour générer une réponse.
@@ -40,17 +42,23 @@ Ce sont des techniques ou des stratégies qui améliorent la qualité du 'retrie
 
 Utilisé pour la compréhension et recherche sémantique.
 
-#### Sparse search
+Chaque chunk est transformé par un modèle d'embedding (text-embedding-3-large de OpenAI) en un vecteur 3072 dimensions. La requête de l'utilisateur est transformée de la même façon, puis on calcule la similarité cosinus entre le vecteur de la requête et les vecteurs des chunks stockés dans Qdrant pour retrouver les plus proches sémantiquement. Cette approche capte bien les reformulations et synonymes, mais peut manquer des correspondances exactes sur des termes rares, des codes d'erreur ou des noms précis.
+
+##### Sparse Vector
 
 Utilisé pour la compréhension et recherche de mots clés
 
+Chaque chunk est transformé en un vecteur de très haute dimensionnalité (une dimension par mot du vocabulaire), majoritairement composé de zéros. Les méthodes courantes sont BM25 (pondération classique par fréquence de termes) et SPLADE (une version apprise et enrichie). La correspondance entre la requête et un chunk se fait par recoupement des dimensions actives (mots communs), et non par proximité géométrique comme pour les vecteurs denses. Cette approche est précise sur les termes exacts, mais ne capte pas les synonymes ou reformulations.
+
 ##### Hybrid search
 
-##### Reranking
+Combine les deux approches précédentes: la requête est envoyée en parallèle à la recherche dense et à la recherche sparse, chacune retournant sa propre liste de résultats classés. Ces deux listes sont ensuite fusionnées en un seul classement, généralement avec la méthode **Reciprocal Rank Fusion (RRF)**, qui combine les résultats en fonction de leur position dans chaque liste plutôt que leurs scores bruts (les scores cosinus et BM25 ne sont pas sur la même échelle et ne peuvent pas être comparés directement). Qdrant supporte nativement RRF via son `query_points` API, en combinant des `Prefetch` sur les vecteurs denses et sparse d'une même collection.
+
+#### Reranking
+
+Après que les meilleurs candidats ont été récupéré par la recherche hybride, ils passent par un processus de réorganisation. Ce processus utilise un cross-encoder (rerank-v4.0-fast de Cohere) qui prend les pairs <prompt, candidat> pour les encoder **conjointement**. Cela permet de calculer un score de pertinence beaucoup plus précis, puisque le modèle compare directement le contenu de la requête et du candidat plutôt que de mesurer une simple distance géométrique entre deux vecteurs pré-calculés. Le but est de réordonner la liste pour que quand on prend les top 5 candidats, on est sûr qu'ils incluent les chunks pertinents.
 
 ![Description de l'image](docs/Images/RAG%20-%20Retrieval%20phase.jpg)
-
-## Pile technologique utilisé
 
 ## Diagrames
 
