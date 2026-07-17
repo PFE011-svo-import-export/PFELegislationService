@@ -76,15 +76,28 @@ class VectorStore:
                 points=points[start:start + batch_size],
             )
 
-    def search(self, query_vector: list[float], top_k: int = 10) -> list[dict]:
+    def dense_search(self, query_vector: list[float], top_k: int = 10) -> list[dict]:
         """Recherche dense uniquement — conservée pour compatibilité/debug."""
         results = self.client.query_points(
             collection_name=self.COLLECTION_NAME,
             query=query_vector,
-            using="dense",  # requis maintenant que les vecteurs sont nommés
+            using="dense",
             limit=top_k
         )
         return self._format_results(results.points)
+    
+    def sparse_search(self, query_sparse: dict, top_k: int = 10) -> list[dict]:
+            """Recherche sparse uniquement — conservée pour compatibilité/debug."""
+            results = self.client.query_points(
+                collection_name=self.COLLECTION_NAME,
+                query=SparseVector(
+                    indices=query_sparse["indices"],
+                    values=query_sparse["values"],
+                ),
+                using="bm25",
+                limit=top_k
+            )
+            return self._format_results(results.points)
 
     def hybrid_search(self, query_vector: list[float], query_sparse: dict, top_k: int = 5, prefetch_limit: int = 15) -> list[dict]:
         """Recherche hybride dense + BM25, fusionnée avec Reciprocal Rank Fusion."""
@@ -132,9 +145,6 @@ class VectorStore:
             with_vectors=False,
         )
         return len(results) > 0
-
-    def delete_collection(self):
-        self.client.delete_collection(collection_name=self.COLLECTION_NAME)
 
     def ping(self) -> bool:
         """Vérifie que Qdrant est joignable. Utilisé par le probe de readiness."""

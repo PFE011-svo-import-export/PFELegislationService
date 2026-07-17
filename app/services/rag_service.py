@@ -128,11 +128,12 @@ class RagService:
         prompt_dense = self.embed(prompt)
         prompt_sparse = self.embed_sparse_batch([prompt])[0]
 
-        dense_results = self.vector_store.search(prompt_dense, top_k=top_k)
+        dense_results = self.vector_store.dense_search(prompt_dense, top_k=top_k)
+        sparse_results = self.vector_store.sparse_search(prompt_sparse, top_k=top_k)
         hybrid_results = self.vector_store.hybrid_search(prompt_dense, prompt_sparse, top_k=top_k)
         reranked_results = self._rerank_results(prompt, hybrid_results, topk=top_k)
 
-        markdown = self._format_comparison_markdown(prompt, top_k, dense_results, hybrid_results, reranked_results)
+        markdown = self._format_comparison_markdown(prompt, top_k, dense_results, sparse_results, hybrid_results, reranked_results)
 
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(markdown)
@@ -160,7 +161,7 @@ class RagService:
             for res in response.results
         ]
 
-    def _format_comparison_markdown(self, prompt: str, top_k: int, dense_results: list[dict], hybrid_results: list[dict], reranked_results: list[dict]) -> str:
+    def _format_comparison_markdown(self, prompt: str, top_k: int, dense_results: list[dict], sparse_results: list[dict], hybrid_results: list[dict], reranked_results: list[dict]) -> str:
         def escape(text: str) -> str:
             return text.replace("|", "\\|").replace("\n", " ")
 
@@ -171,33 +172,22 @@ class RagService:
                 lines.append(f"| {i} | {r['score']:.4f} | {r['source']} | {r['heading_path']} | {content} |")
             return "\n".join(lines)
 
-        def reranked_table(results: list[dict], hybrid_results: list[dict]) -> str:
+        def reranked_table(results: list[dict], hybrid_results: list[dict], dense_results: list[dict], sparse_results: list[dict]) -> str:
             hybrid_contents = [r["content"] for r in hybrid_results]
-            lines = ["| # | Rerank score | Hybrid rank | Source | Heading | Content |", "|---|--------------|-------------|--------|---------|---------|"]
+            lines = ["| # | Rerank score | Hybrid rank | Dense rank | Sparse rank | Source | Heading | Content |", "|---|--------------|-------------|------------|-------------|--------|---------|---------|"]
             for i, r in enumerate(results, start=1):
                 content = escape(r["content"])[:200]
-                prev_rank = hybrid_contents.index(r["content"]) + 1 if r["content"] in hybrid_contents else "—"
-                lines.append(f"| {i} | {r['score']:.4f} | {prev_rank} | {r['source']} | {r['heading_path']} | {content} |")
+                prev__hyb_rank = hybrid_contents.index(r["content"]) + 1 if r["content"] in hybrid_contents else "—"
+                prev__dense_rank = next((j + 1 for j, d in enumerate(dense_results) if d["content"] == r["content"]), "—")
+                prev__sparse_rank = next((j + 1 for j, s in enumerate(sparse_results) if s["content"] == r["content"]), "—")
+                lines.append(f"| {i} | {r['score']:.4f} | {prev__hyb_rank} | {prev__dense_rank} | {prev__sparse_rank} | {r['source']} | {r['heading_path']} | {content} |")
             return "\n".join(lines)
-
-        dense_contents = [r["content"] for r in dense_results]
-        hybrid_contents = [r["content"] for r in hybrid_results]
-
-        only_dense = [c for c in dense_contents if c not in hybrid_contents]
-        only_hybrid = [c for c in hybrid_contents if c not in dense_contents]
-        common = [c for c in dense_contents if c in hybrid_contents]
-
-        rank_lines = ["| Content | Dense rank | Hybrid rank |", "|---------|------------|-------------|"]
-        for c in common:
-            rank_lines.append(f"| {escape(c)[:150]} | {dense_contents.index(c) + 1} | {hybrid_contents.index(c) + 1} |")
 
         sections = [
             f"# Search Comparison\n\n**Prompt:** `{prompt}`\n\n**Top K:** {top_k}\n",
             f"## Dense-only search\n\n{results_table(dense_results)}\n",
+            f"## Sparse-only search\n\n{results_table(sparse_results)}\n",
             f"## Hybrid search (dense + BM25, RRF fusion)\n\n{results_table(hybrid_results)}\n",
-            f"## Reranked (bge-reranker-v2-m3, over hybrid candidates)\n\n_Final candidate list sent to the LLM, hybrid results re-scored by the cross-encoder._\n\n{reranked_table(reranked_results, hybrid_results)}\n",
-            f"## Diff\n\n**Only in dense ({len(only_dense)}):**\n\n" + "\n".join(f"- {escape(c)[:150]}" for c in only_dense) if only_dense else "**Only in dense (0):** none",
-            f"**Only in hybrid ({len(only_hybrid)}):**\n\n" + "\n".join(f"- {escape(c)[:150]}" for c in only_hybrid) if only_hybrid else "**Only in hybrid (0):** none",
-            f"**Common results ({len(common)}), rank comparison:**\n\n{chr(10).join(rank_lines) if common else '_none_'}",
+            f"## Reranked (rerank-v4.0-fast, over hybrid candidates)\n\n_Final candidate list sent to the LLM, hybrid results re-scored by the cross-encoder._\n\n{reranked_table(reranked_results, hybrid_results, dense_results, sparse_results)}\n",
         ]
         return "\n\n".join(sections)

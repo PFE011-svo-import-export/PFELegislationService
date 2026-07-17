@@ -24,11 +24,6 @@ def check_ingested(filename: str, vector_store = Depends(get_vector_store)):
     ingested = vector_store.is_source_ingested(filename)
     return {"filename": filename, "ingested": ingested}
 
-@rag_router.delete("/collections")
-def delete_coll(vector_store = Depends(get_vector_store)):
-    vector_store.delete_collection()
-    return {"status": "deleted", "collection": vector_store.COLLECTION_NAME}
-
 @rag_router.post("/compare")
 def compare_search(req: CompareSearchRequest, rag_service = Depends(get_rag_service)):
     output_path = rag_service.compare_search(req.prompt, top_k=req.top_k)
