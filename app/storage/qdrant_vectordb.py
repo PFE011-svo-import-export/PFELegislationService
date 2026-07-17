@@ -135,3 +135,8 @@ class VectorStore:
 
     def delete_collection(self):
         self.client.delete_collection(collection_name=self.COLLECTION_NAME)
+
+    def ping(self) -> bool:
+        """Vérifie que Qdrant est joignable. Utilisé par le probe de readiness."""
+        self.client.get_collections()
+        return True

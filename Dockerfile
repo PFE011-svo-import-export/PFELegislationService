@@ -15,4 +15,6 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["fastapi", "run", "main.py", "--host", "0.0.0.0", "--port", "8000"]
+# Render injects $PORT at runtime; fall back to 8000 for local `docker run`.
+# Use the shell form so ${PORT} is expanded (exec form would pass it literally).
+CMD ["sh", "-c", "fastapi run main.py --host 0.0.0.0 --port ${PORT:-8000}"]
