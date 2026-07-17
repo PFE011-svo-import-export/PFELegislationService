@@ -1,0 +1,106 @@
+@startuml deployment
+!theme plain
+title Deployment Diagram — PFE Legislation Service (RAG)
+
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 12
+skinparam roundCorner 4
+skinparam ArrowColor #5A6675
+skinparam ArrowFontSize 11
+skinparam nodesep 55
+skinparam ranksep 55
+
+skinparam node {
+  BorderColor #2C5F8E
+  BackgroundColor #EAF1F8
+  FontColor #16202C
+}
+skinparam cloud {
+  BorderColor #A9642A
+  BackgroundColor #F8EFE3
+  FontColor #16202C
+}
+skinparam database {
+  BorderColor #2E7D5B
+  BackgroundColor #E6F2EC
+  FontColor #16202C
+}
+skinparam artifact {
+  BorderColor #7A8896
+  BackgroundColor #FFFFFF
+  FontColor #16202C
+}
+
+' ═══════════════════════════════════════════════════════════
+'  Tier 1 — client machine
+' ═══════════════════════════════════════════════════════════
+node "Client Machine" <<device>> as CLIENT {
+  artifact "Front-end Application" as FRONT
+}
+
+' ═══════════════════════════════════════════════════════════
+'  Tier 2 — Render: the only compute we operate
+' ═══════════════════════════════════════════════════════════
+node "Render — Web Service" <<execution environment>> as RENDER {
+
+  node "Docker Container\npython 3.14 · port 8000" <<container>> as DOCKER {
+
+    artifact "**FastAPI Service**\n""fastapi run main.py""\n== Routes ==\nchat_routes — /api/v1/legislation\nrag_routes — /api/v1/rag\n== Services ==\nChatService · RagService\nVectorStore (Qdrant client)" as APP
+
+    artifact "**FastEmbed — Qdrant/bm25**\nBM25 sparse vectors\nrun in-process (CPU)\nno network call" as BM25
+
+    artifact "**app/documents/**\nMarkdown corpus shipped in the image\nephemeral file system" as DOCS
+  }
+}
+
+' ═══════════════════════════════════════════════════════════
+'  Tier 3 — managed vector storage
+' ═══════════════════════════════════════════════════════════
+database "Qdrant Cloud" <<managed data store>> as QDRANT {
+  artifact "collection\n**documents-legislatives-import-export**\n--\ndense: 3072 dim · cosine\nbm25: sparse · IDF modifier\npayload index: source (keyword)\nserver-side RRF fusion" as COLL
+}
+
+' ═══════════════════════════════════════════════════════════
+'  Tier 3 — third-party AI providers
+' ═══════════════════════════════════════════════════════════
+cloud "OpenAI" <<external service>> as OPENAI {
+  artifact "**text-embedding-3-large**\ndense embeddings (3072 dim)\nbatches of 32 at ingestion" as EMB
+}
+
+cloud "Cohere" <<external service>> as COHERE {
+  artifact "**rerank-v4.0-fast**\ncross-encoder\n15 candidates → top 5" as RERANK
+}
+
+cloud "Anthropic" <<external service>> as ANTHROPIC {
+  artifact "**claude-sonnet-4-6**\ngeneration + count_tokens" as LLM
+}
+
+' ═══════════════════════════════════════════════════════════
+'  Communication paths
+' ═══════════════════════════════════════════════════════════
+FRONT --> APP : **HTTPS / REST** :443\nTLS terminated by Render\nCORS allow_origins=["*"]
+
+APP --> COLL   : **HTTPS / REST** :6333\nQDRANT_API_KEY\nupsert · query_points (RRF)
+APP --> EMB    : **HTTPS / REST** :443\nOPENAI_API_KEY
+APP --> RERANK : **HTTPS / REST** :443\nCOHERE_API_KEY
+APP --> LLM    : **HTTPS / REST** :443\nANTHROPIC_API_KEY
+
+APP ..> BM25 : <<use>>\nin-process
+APP ..> DOCS : <<read>>\nat ingestion
+
+' ═══════════════════════════════════════════════════════════
+legend right
+  |= Stereotype |= Meaning |
+  | <<execution environment>> | Compute we operate (Render) |
+  | <<managed data store>> | Persistent, managed vector storage |
+  | <<external service>> | Third-party AI, billed per usage |
+
+  All secrets are injected as Render environment variables;
+  no .env file is present in the image.
+  docker-compose.yml describes local development only —
+  Render only consumes the Dockerfile.
+endlegend
+
+@enduml
