@@ -82,13 +82,11 @@ class ChatService:
 
         response = self.client.messages.create(
             model="claude-sonnet-4-6",
-            max_tokens=2000,
+            max_tokens=10000,
             output_config={"effort": "low"},
             system='''
-            Tu es un assistant spécialisé en législation d'import-export de marchandises au Canada.
-            Réponds à la question de l'utilisateur en te basant UNIQUEMENT sur la documentation fournie.
-            Si la documentation ne contient pas l'information nécessaire, dis-le clairement et n'invente rien.
-            Réponds en français, de manière claire et concise.
+            You are a helpful assistant that provides legal necessary information about import-export on merchandise based on retrieved document chunks.
+            If the retrieved chunks do not contain relevant information, use empty strings for the fields. Always use the retrieved information to answer the user's question. Do not make up any information.
             ''',
             messages=[{"role": "user", "content": augmented_prompt}],
         )
@@ -96,5 +94,6 @@ class ChatService:
         answer = next((block.text for block in response.content if block.type == "text"), "")
         # Sources uniques, dans l'ordre de pertinence renvoyé par le reranker.
         sources = list(dict.fromkeys(c["source"] for c in candidates))
+        contexts = [c["content"] for c in candidates]
 
-        return {"answer": answer, "sources": sources}
+        return {"answer": answer, "sources": sources, "contexts": contexts}
