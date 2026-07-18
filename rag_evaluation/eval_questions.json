@@ -3,7 +3,7 @@
     "description": "Jeu de donnees d'evaluation (question / reponse attendue) pour le service RAG de legislation d'import-export au Canada. Les paires sont ancrees dans les documents sources situes sous app/documents. Compatible ragas : mapper 'question' -> user_input et 'ground_truth' -> reference.",
     "langue": "fr",
     "source_globale": "Documents ASFC / ACIA / Tarif des douanes du Canada (app/documents)",
-    "nombre_de_paires": 83
+    "nombre_de_paires": 95
   },
   "data": [
     {
@@ -1158,6 +1158,174 @@
       "question": "Dans quelle case de la Declaration en detail commerciale (DDC) de type C faut-il inscrire le numero de licence d'importation pour les marchandises de la LMIC?",
       "ground_truth": "Pour toutes les marchandises inscrites sur la LMIC, un numero de licence d'importation particuliere ou de LGI applicable doit figurer dans la case 81 (Permis d'autorisation speciale) de la Declaration en detail commerciale (DDC) de type C.",
       "source": "memorandum-D19-10-2.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelle est la capitale de la France ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Qui a peint la Joconde ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Combien de continents y a-t-il sur Terre ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelle est la vitesse de la lumiere dans le vide ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Comment prepare-t-on une pate a crepes ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Qui a ecrit le roman Les Miserables ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelle est la planete la plus proche du Soleil ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "En quelle annee le premier homme a-t-il marche sur la Lune ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quel est le plus long fleuve du monde ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Comment dit-on bonjour en japonais ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelle est la formule chimique de l eau ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Qui a developpe la theorie de la relativite ?",
+      "ground_truth": "I don't know",
+      "source": "",
       "answer": "...",
       "contexts": [
         "...",
