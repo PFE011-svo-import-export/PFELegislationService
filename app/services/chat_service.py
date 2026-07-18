@@ -25,12 +25,14 @@ class ChatService:
         candidates = self.rag_service.retrieve(prompt)
         retrieval_elapsed = time.perf_counter() - retrieval_start
         print(f"Retrieval took {retrieval_elapsed:.2f}s")
+        print(f"Here are the candidates retrieved from the vector store:\n{candidates}")
 
         count = self.client.messages.count_tokens(
             model="claude-sonnet-4-6", messages=[{"role": "user", "content": prompt}]
         )
 
         print(f"Total prompt tokens: {count.input_tokens}")
+        
         documentation = "\n\n".join(
             f"[Source: {c['source']}]\n{c['content']}"
             for c in candidates
