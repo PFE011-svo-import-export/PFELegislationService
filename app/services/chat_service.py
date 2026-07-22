@@ -3,8 +3,14 @@ from anthropic import Anthropic
 from app.services.rag_service import RagService
 from app.models.TraitementTarifiaire import TraitementTarifiare
 from app.models.ExigencesImportation import ExigencesImportation
-from typing import TypeVar, Type
+from typing import Iterator, TypeVar, Type
 from pydantic import BaseModel
+
+SYSTEM_PROMPT = '''
+You are a helpful assistant that provides legal necessary information about import-export on merchandise based on retrieved document chunks.
+If the retrieved chunks do not contain relevant information, say "Aucune information disponible.". Always use the retrieved information to answer the user's question. Do not make up any information.
+Answer in plain text, without any formatting or markdown and without extra examples. Do not give any advice or recommendations. Do not provide any information that is not present in the retrieved chunks. If the retrieved chunks do not contain relevant information, say "Aucune information disponible.".
+'''
 
 T = TypeVar("T", bound=BaseModel)
 class ChatService:
@@ -25,12 +31,14 @@ class ChatService:
         candidates = self.rag_service.retrieve(prompt)
         retrieval_elapsed = time.perf_counter() - retrieval_start
         print(f"Retrieval took {retrieval_elapsed:.2f}s")
+        print(f"Here are the candidates retrieved from the vector store:\n{candidates}")
 
         count = self.client.messages.count_tokens(
             model="claude-sonnet-4-6", messages=[{"role": "user", "content": prompt}]
         )
 
         print(f"Total prompt tokens: {count.input_tokens}")
+        
         documentation = "\n\n".join(
             f"[Source: {c['source']}]\n{c['content']}"
             for c in candidates
@@ -48,10 +56,7 @@ class ChatService:
             model="claude-sonnet-4-6",
             max_tokens=10000,
             output_config={"effort": "low"},
-            system='''
-            You are a helpful assistant that provides legal necessary information about import-export on merchandise based on retrieved document chunks.
-            If the retrieved chunks do not contain relevant information, use empty strings for the fields. Always use the retrieved information to answer the user's question. Do not make up any information.
-            ''',
+            system=SYSTEM_PROMPT,
             messages=[{"role": "user", "content": augmented_prompt}],
             output_format=output_model,
         )
@@ -68,8 +73,47 @@ class ChatService:
     def answer_prompt(self, prompt: str) -> dict:
         """Répond à une question libre de l'utilisateur en langage naturel,
         en se basant sur les chunks récupérés. Utilisé par l'interface de test."""
-
+        retrieval_start = time.perf_counter()
         candidates = self.rag_service.retrieve(prompt)
+        retrieval_elapsed = time.perf_counter() - retrieval_start
+        print(f"Retrieval took {retrieval_elapsed:.2f}s")
+
+        documentation = "\n\n".join(
+            f"[Source: {c['source']}]\n{c['content']}"
+            for c in candidates
+        )
+
+        augmented_prompt = f"Question: {prompt}\n\nDocumentation:\n{documentation}"
+        llm_start = time.perf_counter()
+        response = self.client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=10000,
+            output_config={"effort": "low"},
+            system=SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": augmented_prompt}],
+        )
+
+        llm_elapsed = time.perf_counter() - llm_start
+
+        print(f"LLM generation took {llm_elapsed:.2f}s")
+
+        answer = next((block.text for block in response.content if block.type == "text"), "")
+        # Sources uniques, dans l'ordre de pertinence renvoyé par le reranker.
+        sources = list(dict.fromkeys(c["source"] for c in candidates))
+        contexts = [c["content"] for c in candidates]
+
+        return {"answer": answer, "sources": sources, "contexts": contexts}
+
+    def stream_prompt(self, prompt: str) -> Iterator[str]:
+        """Même chose que answer_prompt, mais renvoie la réponse morceau par
+        morceau au lieu d'attendre la fin de la génération.
+
+        Le RAG (retrieval + rerank) reste bloquant : seule la génération du LLM
+        est streamée. C'est elle qui domine le temps d'attente perçu.
+        """
+        retrieval_start = time.perf_counter()
+        candidates = self.rag_service.retrieve(prompt)
+        print(f"Retrieval took {time.perf_counter() - retrieval_start:.2f}s")
 
         documentation = "\n\n".join(
             f"[Source: {c['source']}]\n{c['content']}"
@@ -78,21 +122,19 @@ class ChatService:
 
         augmented_prompt = f"Question: {prompt}\n\nDocumentation:\n{documentation}"
 
-        response = self.client.messages.create(
+        llm_start = time.perf_counter()
+        with self.client.messages.stream(
             model="claude-sonnet-4-6",
-            max_tokens=2000,
+            max_tokens=10000,
             output_config={"effort": "low"},
-            system='''
-            Tu es un assistant spécialisé en législation d'import-export de marchandises au Canada.
-            Réponds à la question de l'utilisateur en te basant UNIQUEMENT sur la documentation fournie.
-            Si la documentation ne contient pas l'information nécessaire, dis-le clairement et n'invente rien.
-            Réponds en français, de manière claire et concise.
-            ''',
+            system=SYSTEM_PROMPT,
             messages=[{"role": "user", "content": augmented_prompt}],
-        )
+        ) as stream:
+            for text in stream.text_stream:
+                yield text
 
-        answer = next((block.text for block in response.content if block.type == "text"), "")
-        # Sources uniques, dans l'ordre de pertinence renvoyé par le reranker.
-        sources = list(dict.fromkeys(c["source"] for c in candidates))
+            usage = stream.get_final_message().usage
 
-        return {"answer": answer, "sources": sources}
+        print(f"Total input tokens: {usage.input_tokens}")
+        print(f"Total output tokens: {usage.output_tokens}")
+        print(f"LLM generation took {time.perf_counter() - llm_start:.2f}s")

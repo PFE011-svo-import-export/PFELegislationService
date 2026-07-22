@@ -1,0 +1,1340 @@
+{
+  "metadata": {
+    "description": "Jeu de donnees d'evaluation (question / reponse attendue) pour le service RAG de legislation d'import-export au Canada. Les paires sont ancrees dans les documents sources situes sous app/documents. Compatible ragas : mapper 'question' -> user_input et 'ground_truth' -> reference.",
+    "langue": "fr",
+    "source_globale": "Documents ASFC / ACIA / Tarif des douanes du Canada (app/documents)",
+    "nombre_de_paires": 95
+  },
+  "data": [
+    {
+      "question": "Quel formulaire faut-il remplir pour importer des marchandises commerciales au Canada?",
+      "ground_truth": "Il faut remplir le formulaire B3, Douanes Canada - formule de codage. Ce guide de l'Agence des services frontaliers du Canada (ASFC), publie en 2009 (numero de catalogue PS38-35/2009F), explique comment le remplir lors de l'importation de marchandises commerciales au Canada.",
+      "source": "importation-marchandises-commerciales.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quel organisme publie le guide sur la maniere de remplir le formulaire B3 pour l'importation de marchandises commerciales?",
+      "ground_truth": "L'Agence des services frontaliers du Canada (ASFC). La publication est une monographie de 2009, editee a Ottawa, en Ontario.",
+      "source": "importation-marchandises-commerciales.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelles sont les trois exigences a remplir pour appliquer la methode de la valeur transactionnelle selon le paragraphe 48(1) de la Loi sur les douanes?",
+      "ground_truth": "Les trois exigences sont : a) les marchandises importees ont ete vendues pour exportation au Canada; b) l'acheteur dans la vente pour exportation est l'acheteur au Canada; c) le prix paye ou a payer pour les marchandises est determinable.",
+      "source": "methode-transactionelle-valeur-en-douane-d13-1-3.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Sur quel article de la Loi sur les douanes repose la methode de la valeur transactionnelle?",
+      "ground_truth": "La methode de la valeur transactionnelle repose sur l'article 48 de la Loi sur les douanes. Les articles 45 et 48 en constituent les references legislatives principales.",
+      "source": "methode-transactionelle-valeur-en-douane-d13-1-3.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Que designe l'expression 'vente' dans le cadre de la valeur transactionnelle?",
+      "ground_truth": "Le terme 'vente' designe le transfert de propriete des marchandises en echange d'une contrepartie monetaire. Les marchandises qui ne font pas l'objet d'une vente ne peuvent pas etre evaluees en vertu de l'article 48.",
+      "source": "methode-transactionelle-valeur-en-douane-d13-1-3.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quels montants doivent etre ajoutes au prix paye ou a payer lors de la determination de la valeur transactionnelle (ajustements du paragraphe 48(5))?",
+      "ground_truth": "Doivent etre ajoutes, s'ils n'y sont pas deja compris : certaines commissions et frais de courtage; les couts et frais d'emballage; la valeur de certaines marchandises et services fournis par l'acheteur (aides); certaines redevances et droits de licence; la valeur des produits de revente, cession ou utilisation ulterieure qui revient au vendeur; ainsi que les couts de transport et frais connexes jusqu'au lieu d'expedition directe au Canada.",
+      "source": "methode-transactionelle-valeur-en-douane-d13-1-3.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Comment un acheteur peut-il se qualifier comme 'acheteur au Canada' selon le Reglement sur la determination de la valeur en douane?",
+      "ground_truth": "Selon la structure hierarchique du Reglement (articles 2 et 2.1), un acheteur peut se qualifier comme acheteur au Canada en etant soit : a) un resident (particulier ou entite commerciale); b) une personne ayant un etablissement stable au Canada; ou c) une personne qui n'est ni un resident ni un non-resident avec etablissement stable, mais qui importe des marchandises pour son usage personnel ou sur une base speculative pour des ventes futures.",
+      "source": "valeur-en-douane-d13-1-3-fra.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelles deux conditions une entite commerciale doit-elle respecter pour etre consideree comme resident au Canada aux fins de la valeur en douane?",
+      "ground_truth": "L'entite commerciale doit, premierement, exercer ses activites au Canada et, deuxiemement, maintenir la gestion et le controle de ses operations quotidiennes au Canada.",
+      "source": "valeur-en-douane-d13-1-3-fra.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quels sont les trois elements qui composent la definition d'un 'lieu d'affaires fixe' au sens du Reglement (etablissement stable)?",
+      "ground_truth": "Les trois elements, qui doivent tous etre reunis, sont : a) il doit y avoir un lieu d'affaires au Canada; b) ce lieu d'affaires au Canada doit etre fixe; c) les activites de l'acheteur au Canada doivent etre exercees par l'intermediaire de ce lieu d'affaires fixe.",
+      "source": "valeur-en-douane-d13-1-3-fra.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Un acheteur situe a l'exterieur du Canada peut-il etre considere comme 'acheteur au Canada'?",
+      "ground_truth": "Oui, dans certaines conditions. En vertu de l'alinea 2.1 c) du Reglement, un acheteur a l'exterieur du Canada peut etre considere comme acheteur au Canada s'il importe les marchandises pour sa consommation ou son utilisation personnelle (sans les destiner a la vente), ou s'il les achete a des fins speculatives pour le marche canadien sans avoir conclu, avant son propre achat, un accord de vente a un acheteur situe au Canada.",
+      "source": "valeur-en-douane-d13-1-3-fra.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "La taxe sur les produits et services (TPS) doit-elle etre incluse dans le prix paye ou a payer aux fins de la valeur en douane?",
+      "ground_truth": "Non. La taxe sur les produits et services (TPS) ne doit pas etre incluse dans le prix paye ou a payer dans la mesure ou elle a ete facturee par le vendeur, aux fins de la determination de la valeur en douane des marchandises importees.",
+      "source": "valeur-en-douane-d13-4-3-fra.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Comment sont traites les droits et taxes a l'exportation dans le calcul du prix paye ou a payer?",
+      "ground_truth": "Le montant de tout droit ou taxe paye ou a payer au gouvernement du pays d'exportation parce que les marchandises ont ete exportees fait partie du prix paye ou a payer. Par exemple, pour un produit vendu 50 $ l'unite avec une taxe a l'exportation de 10 %, le prix total paye ou a payer est de 50 $ + (50 $ x 10 %) = 55 $.",
+      "source": "valeur-en-douane-d13-4-3-fra.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Le paiement d'une garantie fait-il partie du prix paye ou a payer des marchandises importees?",
+      "ground_truth": "Oui. Lorsque le prix de vente comprend une garantie, que l'acheteur verse separement au vendeur le paiement d'une garantie, ou que le vendeur exige que l'acheteur se procure une garantie aupres d'une tierce partie, ce montant est considere comme faisant partie du prix paye ou a payer et est inclus dans la valeur transactionnelle.",
+      "source": "valeur-en-douane-d13-4-3-fra.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Comment traite-t-on une clause de revision des prix qui augmente le prix apres la vente pour exportation?",
+      "ground_truth": "Si le prix paye ou a payer augmente en raison d'une clause de revision des prix apres la vente des marchandises pour l'exportation, cette augmentation doit se refleter dans le prix paye ou a payer. Si l'importateur ignorait cette hausse au moment de l'importation, il doit presenter une declaration rectificative a l'ASFC des qu'il en prend connaissance.",
+      "source": "valeur-en-douane-d13-4-3-fra.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quels traitements tarifaires sont accordes au Togo?",
+      "ground_truth": "Le Togo beneficie du tarif de la nation la plus favorisee (NPF), du tarif de preference general (TPG) et du tarif des pays les moins developpes (TPMD).",
+      "source": "traitements-tarifiaires-des-pays.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quels traitements tarifaires s'appliquent aux importations en provenance des Etats-Unis d'Amerique?",
+      "ground_truth": "Les Etats-Unis d'Amerique beneficient du tarif de la nation la plus favorisee (NPF) et du tarif des Etats-Unis (TEU).",
+      "source": "traitements-tarifiaires-des-pays.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quels traitements tarifaires sont accordes a l'Australie?",
+      "ground_truth": "L'Australie beneficie du tarif de la nation la plus favorisee (NPF), du tarif de l'Australie (TAU) et du tarif du Partenariat transpacifique global et progressiste (TPTGP).",
+      "source": "traitements-tarifiaires-des-pays.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quel traitement tarifaire est accorde a la Russie et au Belarus?",
+      "ground_truth": "Ni la Russie ni le Belarus ne beneficient d'aucun traitement tarifaire dans la liste : ils ne recoivent ni le NPF, ni le TPG, ni le TPMD, ni aucun autre traitement (aucune colonne cochee).",
+      "source": "traitements-tarifiaires-des-pays.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quel traitement tarifaire particulier est accorde a la Coree du Sud?",
+      "ground_truth": "La Coree du Sud beneficie du tarif de la nation la plus favorisee (NPF) et du tarif Canada-Coree (TKR).",
+      "source": "traitements-tarifiaires-des-pays.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelle est la source et la date d'emission de la liste des traitements tarifaires des pays?",
+      "ground_truth": "La liste provient de l'Annexe du Tarif des douanes du Canada et a ete emise le 1 janvier 2026.",
+      "source": "traitements-tarifiaires-des-pays.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "En vertu de quel article de la Loi sur les douanes une justification d'origine doit-elle etre presentee pour les marchandises importees?",
+      "ground_truth": "En vertu de l'article 35.1 de la Loi sur les douanes, une justification d'origine doit etre presentee pour toutes les marchandises importees.",
+      "source": "memorandum-D11-4-2.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Pendant combien de temps un importateur doit-il conserver la justification de l'origine et les documents connexes?",
+      "ground_truth": "Les importateurs doivent conserver la justification de l'origine et tout autre document pertinent lie a l'importation de marchandises commerciales pendant six ans.",
+      "source": "memorandum-D11-4-2.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelle justification d'origine est requise pour beneficier du tarif de preference general (TPG)?",
+      "ground_truth": "Pour tous les produits originaires de pays beneficiant du TPG, un formulaire A - Certificat d'origine ou la declaration d'origine de l'exportateur doit etre presente a l'ASFC sur demande. Ce document doit etre rempli et signe par l'exportateur situe dans le pays beneficiaire du TPG ou les marchandises ont ete finies avant leur importation au Canada.",
+      "source": "memorandum-D11-4-2.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quel est le seuil des expeditions de faible valeur (EFV) applicable aux importations commerciales depuis le 1 juillet 2020?",
+      "ground_truth": "Depuis le 1 juillet 2020, le seuil des expeditions de faible valeur (EFV) a ete releve a une valeur en douane estimative ne depassant pas 3 300 $ CAN, et l'exigence d'une declaration ecrite attestant que les marchandises sont originaires a ete abrogee.",
+      "source": "memorandum-D11-4-2.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Dans le cadre d'un accord de libre-echange, de combien de temps dispose une personne pour corriger une declaration d'origine sans commettre d'infraction?",
+      "ground_truth": "Aucune infraction au sens de l'article 160 de la Loi n'est reputee avoir ete commise lorsque la personne corrige une declaration d'origine dans les 90 jours suivant le jour ou elle a des motifs de croire que la justification de l'origine pourrait renfermer des renseignements inexacts.",
+      "source": "memorandum-D11-4-2.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelle forme peut prendre une justification d'origine?",
+      "ground_truth": "Une justification d'origine peut se presenter sous la forme d'une facture commerciale, d'une Facture des douanes canadiennes, d'un formulaire A Certificat d'origine, d'un certificat d'origine, d'une declaration d'origine de l'exportateur, d'une Declaration d'origine, d'un certificat d'origine contenant des donnees minimales requises, ou de tout autre document indiquant le pays d'origine des marchandises.",
+      "source": "memorandum-D11-4-2.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quel organisme est responsable des politiques regissant l'importation d'aliments, de vegetaux et d'animaux (AVA) et produits connexes?",
+      "ground_truth": "L'Agence canadienne d'inspection des aliments (ACIA) est responsable d'instaurer les politiques qui regissent l'importation, l'exportation et la circulation en transit des aliments, vegetaux et animaux (AVA) et produits connexes. Depuis 2003, l'ASFC assure les services d'inspection des importations de premiere ligne aux postes frontaliers.",
+      "source": "memorandum-D19-1-1.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quel systeme fournit la liste complete et a jour des exigences liees a l'importation de produits reglementes par l'ACIA?",
+      "ground_truth": "Le Systeme automatise de reference a l'importation (SARI) de l'ACIA fournit une liste complete et a jour des exigences liees a l'importation de produits reglementes. Cet outil guide l'utilisateur au moyen de questions et de reponses portant sur le code SH, la description du produit, l'origine, la destination, l'utilisation finale, etc.",
+      "source": "memorandum-D19-1-1.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "A quel moment une licence, un permis ou un certificat d'importation exige par l'ACIA doit-il etre obtenu?",
+      "ground_truth": "Toute licence, tout permis, certificat ou autre document d'importation requis doit etre obtenu avant l'arrivee des marchandises au Canada. Ces documents doivent etre authentiques, lisibles, complets et, au besoin, signes par l'autorite competente.",
+      "source": "memorandum-D19-1-1.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelles categories de produits sont visees par le memorandum D19-1-1 sur les aliments, vegetaux et animaux?",
+      "ground_truth": "Le memorandum D19-1-1 vise notamment les aliments pour animaux, les agents zoopathogenes et phytopathogenes, les engrais, le poisson et produits du poisson, les fruits et legumes frais, les cereales et graines, les animaux vivants, les aliments pour animaux de compagnie, les plantes et produits vegetaux, les fruits et legumes transformes et produits de l'erable, ainsi que les produits et sous-produits d'origine animale (viande, oeufs, lait, miel, cuir, etc.).",
+      "source": "memorandum-D19-1-1.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quels sont les deux types de licences d'importation prevus par la Loi sur les licences d'exportation et d'importation (LLEI)?",
+      "ground_truth": "Il existe deux types de licences d'importation : les licences generales d'importation (LGI) et les licences d'importation particulieres. Les LGI permettent d'importer certaines marchandises admissibles de la LMIC dans les conditions prescrites sans obtenir de licence particuliere, tandis que les licences particulieres sont delivrees par Affaires mondiales Canada (AMC).",
+      "source": "memorandum-D19-10-2.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelle licence generale d'importation s'applique aux importations commerciales de ble, d'orge et de leurs produits?",
+      "ground_truth": "Pour les importations commerciales de ble, d'orge et de produits du ble et de l'orge, la LGI numero 20 s'applique tant que le contingent n'est pas epuise; par la suite, ainsi que pour toute autre importation de ces produits, il faut utiliser la LGI numero 100.",
+      "source": "memorandum-D19-10-2.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelles licences generales d'importation s'appliquent aux produits en acier ordinaire et en acier specialise?",
+      "ground_truth": "Les produits en acier decrits aux articles 80 et 81 de la LMIC peuvent etre importes en vertu de la LGI numero 80 (acier ordinaire) ou de la LGI numero 81 (produits en acier specialise). Aucune limite de quantite ne s'applique a ces produits.",
+      "source": "memorandum-D19-10-2.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Dans quels cas l'indication du pays de fonte et de coulage (PFC) ne s'applique-t-elle pas aux importations d'acier?",
+      "ground_truth": "L'indication du PFC ne s'applique pas si l'importateur est un importateur PAD pour les marchandises dedouanees dans le cadre d'une option de service PAD, si la valeur totale en douane des produits d'acier importes non exemptes ne depasse pas 5 000 $, ou si les produits font partie de la liste d'exemptions (profiles obtenus a froid, profiles forges, fils barbeles, pointes, clous, etc.).",
+      "source": "memorandum-D19-10-2.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Les marchandises canadiennes retournees classees sous les numeros tarifaires 9813.00.00 ou 9814.00.00 necessitent-elles une licence d'importation LMIC?",
+      "ground_truth": "Non. Les expeditions de produits en acier classees dans le numero tarifaire 9813.00.00 ou 9814.00.00 (marchandises canadiennes retournees) peuvent etre importees sans licence d'importation.",
+      "source": "memorandum-D19-10-2.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Qu'est-ce qu'une licence generale d'importation (LGI) et a qui s'applique-t-elle?",
+      "ground_truth": "Une LGI permet l'importation de certaines marchandises admissibles inscrites sur la LMIC, en quantites precises et dans les conditions prescrites, sans avoir a obtenir de licence d'importation particuliere. Les LGI s'appliquent a tous les residents du Canada, et le numero de LGI doit etre fourni dans les documents relatifs a la mainlevee.",
+      "source": "memorandum-D19-10-2.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Qu'est-ce que la declaration en detail commerciale (DDC) et quel formulaire remplace-t-elle?",
+      "ground_truth": "La DDC est un document douanier (anciennement connu sous le nom de formulaire B3) utilise pour declarer en detail les marchandises importees, quelle que soit leur valeur, destinees a un usage commercial au Canada, conformement au Reglement sur la declaration en detail des marchandises importees et le paiement des droits (DORS/86-1062). Elle sert de document de declaration, de correction et de rajustement.",
+      "source": "memorandum-D17-1-10.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Par quels moyens electroniques une DDC peut-elle etre soumise a l'ASFC?",
+      "ground_truth": "Un importateur ou son courtier en douane autorise peut soumettre une DDC par voie electronique par l'un des moyens suivants : a) le Portail client de la GCRA (PCG); b) l'echange de donnees informatisees (EDI); c) les interfaces de programmation d'applications (API).",
+      "source": "memorandum-D17-1-10.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quel formulaire utiliser pour soumettre une declaration en detail commerciale lorsqu'aucun moyen electronique n'est disponible?",
+      "ground_truth": "Dans des circonstances attenuantes, lorsqu'aucun moyen electronique n'est disponible, l'importateur ou son courtier en douane delegue peut soumettre un formulaire BSF946, Exception de la declaration en detail commerciale, au bureau de l'ASFC ou les marchandises ont ete dedouanees (par exemple lors d'une urgence ou dans un lieu sans service Internet).",
+      "source": "memorandum-D17-1-10.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quels formulaires officiels le systeme GCRA produit-il lorsqu'une declaration DDC est soumise par voie electronique?",
+      "ground_truth": "Le systeme GCRA produit un formulaire BSF863 pour une DDC de type C, ou un formulaire BSF864 pour tous les autres types de DDC. Ces formulaires servent de facture officielle et representent une obligation pour les droits et taxes dus sur les marchandises.",
+      "source": "memorandum-D17-1-10.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Selon le Reglement sur la salubrite des aliments au Canada, que signifie qu'un aliment est 'contamine' (contaminated)?",
+      "ground_truth": "Un aliment est 'contamine' lorsqu'il contient un micro-organisme, une substance chimique, une matiere etrangere ou toute autre substance ou chose susceptible de le rendre nuisible a la sante humaine ou impropre a la consommation humaine, y compris ce qui n'est pas autorise sous la Loi sur les aliments et drogues ou qui depasse les limites prevues par cette loi.",
+      "source": "reglements-salubrite-aliments.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quel est le numero et la date d'enregistrement du Reglement sur la salubrite des aliments au Canada (Safe Food for Canadians Regulations)?",
+      "ground_truth": "Le Reglement porte le numero d'enregistrement SOR/2018-108 et a ete enregistre le 30 mai 2018. La version consolidee est a jour au 28 avril 2026, les dernieres modifications etant entrees en vigueur le 19 septembre 2025.",
+      "source": "reglements-salubrite-aliments.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Que comprend le terme 'fish' (poisson) selon les definitions du Reglement sur la salubrite des aliments au Canada?",
+      "ground_truth": "Le terme 'fish' (poisson) inclut les mollusques (shellfish), les crustaces et les autres animaux marins, ainsi que toutes leurs parties, produits et sous-produits.",
+      "source": "reglements-salubrite-aliments.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Sur recommandation de quels ministres et en vertu de quelles lois le Reglement sur la salubrite des aliments au Canada a-t-il ete pris?",
+      "ground_truth": "Il a ete pris par le gouverneur general en conseil sur recommandation du ministre de l'Agriculture et de l'Agroalimentaire et du ministre de la Sante (et, pour certaines sections, du ministre de la Justice et du ministre des Finances). Il s'appuie notamment sur la Loi sur la salubrite des aliments au Canada, la Loi sur les aliments et drogues, la Loi relative aux aliments du betail, la Loi sur la sante des animaux, la Loi sur les semences, la Loi sur l'emballage et l'etiquetage des produits de consommation et le Tarif des douanes.",
+      "source": "reglements-salubrite-aliments.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelles exigences la directive D-98-08 etablit-elle et quelle norme internationale applique-t-elle aux materiaux d'emballage en bois?",
+      "ground_truth": "La directive D-98-08 enonce les exigences relatives a l'entree au Canada de tous les materiaux d'emballage en bois (bois de calage, palettes, caisses) en provenance de toutes les regions, a l'exception de la zone continentale des Etats-Unis. Elle applique la Norme internationale pour les mesures phytosanitaires (NIMP) 15, adoptee sous la Convention internationale pour la protection des vegetaux (CIPV).",
+      "source": "d-98-08.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelle zone geographique est exclue des exigences de la directive D-98-08 sur les materiaux d'emballage en bois?",
+      "ground_truth": "La zone continentale des Etats-Unis est exclue : la directive vise les materiaux d'emballage en bois en provenance de toutes les regions, a l'exception de la zone continentale des Etats-Unis.",
+      "source": "d-98-08.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelle est la date d'entree en vigueur de la 11e version de la directive D-98-08?",
+      "ground_truth": "La 11e version de la directive D-98-08 est entree en vigueur le 1 avril 2026. Elle remplace toutes les versions anterieures.",
+      "source": "d-98-08.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quels types de produits le chapitre 6 du Tarif des douanes couvre-t-il, et lesquels en sont exclus?",
+      "ground_truth": "Le chapitre 6 couvre les plantes vivantes et les produits de la floriculture, c'est-a-dire uniquement les produits fournis habituellement par les horticulteurs, pepinieristes ou fleuristes en vue de la plantation ou de l'ornementation. En sont exclus les pommes de terre, les oignons potagers, les echalotes, les aulx potagers et les autres produits du chapitre 7.",
+      "source": "s02-ch06-plates-vivantes-et-produits-de-la-florculture.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quel est le tarif de la nation la plus favorisee (NPF) applicable aux pommes de terre fraiches ou refrigerees du numero 07.01?",
+      "ground_truth": "Le tarif de la NPF applicable aux pommes de terre fraiches ou refrigerees (numeros 0701.10.00 et 0701.90.00) est de 4,94 $/tonne metrique. Sous les tarifs de preference (TPAC, TPMD, TEU, TMX, TACI, TC, TCR, TP, TCOL, TJ, TPA, THN, TKR, TCUE, TUA, TPTGP, TUK), elles sont en franchise.",
+      "source": "s02-ch07-legumes-plantes-racines-et-tubercules-alimentaires.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Selon la Note 2 du chapitre 7, que comprend la designation 'legumes' pour les numeros 07.09 a 07.12?",
+      "ground_truth": "Pour les numeros 07.09, 07.10, 07.11 et 07.12, la designation 'legumes' comprend egalement les champignons comestibles, les truffes, les olives, les capres, les courgettes, les courges, les aubergines, le mais doux (Zea mays var. saccharata), les piments du genre Capsicum ou Pimenta, les fenouils et des plantes potageres comme le persil, le cerfeuil, l'estragon, le cresson et la marjolaine cultivee.",
+      "source": "s02-ch07-legumes-plantes-racines-et-tubercules-alimentaires.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Comment sont classes les fruits refrigeres dans le chapitre 8 du Tarif des douanes?",
+      "ground_truth": "Selon la Note 2 du chapitre 8, les fruits refrigeres sont a classer dans les memes positions que les fruits frais correspondants. Le chapitre ne comprend pas les fruits non comestibles.",
+      "source": "s02-ch08-fruits-comestibles-ecorces-argumes-ou-melons.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Comment classe-t-on les melanges d'epices de positions differentes des numeros 09.04 a 09.10?",
+      "ground_truth": "Selon la Note 1 du chapitre 9 : les melanges de produits d'une meme position restent classes sous cette position; les melanges de produits de positions differentes sont classes sous le numero 09.10. L'ajout d'autres substances n'affecte pas le classement pour autant que le melange garde le caractere essentiel des produits vises.",
+      "source": "s02-ch09-cafe-the-mate-epices.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quel est le tarif applicable au cafe non torrefie et non decafeine (numero 0901.11.00)?",
+      "ground_truth": "Le cafe non torrefie et non decafeine (numero 0901.11.00) est en franchise au tarif de la nation la plus favorisee (NPF), et egalement en franchise sous tous les tarifs de preference applicables (TPAC, TPMD, TPG, TEU, TMX, TACI, TC, TCR, TI, TN, TSL, TP, TCOL, TJ, TPA, THN, TKR, TCUE, TUA, TPTGP, TUK).",
+      "source": "s02-ch09-cafe-the-mate-epices.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Que couvre le chapitre 10 du Tarif des douanes et quelle condition doit remplir le produit pour y etre classe?",
+      "ground_truth": "Le chapitre 10 couvre les cereales. Les produits ne relevent des positions du chapitre que si les grains sont presents, meme en epis ou sur tiges. Le chapitre ne comprend pas les grains mondes ou autrement travailles, sauf le riz decortique, blanchi, poli, glace, etuve ou en brisures qui reste dans le numero 10.06, et le quinoa dont on a retire le pericarpe pour separer la saponine, qui reste dans le numero 10.08.",
+      "source": "s02-ch10-cereales.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Comment le Tarif des douanes definit-il le froment (ble) dur au chapitre 10?",
+      "ground_truth": "On considere comme froment (ble) dur le froment de l'espece Triticum durum et les hybrides derives du croisement interspecifique de Triticum durum qui presentent le meme nombre (28) de chromosomes que celui-ci.",
+      "source": "s02-ch10-cereales.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quels produits sont exclus du chapitre 11 du Tarif des douanes (produits de la minoterie)?",
+      "ground_truth": "Sont exclus du chapitre 11 : les malts torrefies conditionnes comme succedanes du cafe (numero 09.01 ou 21.01); les farines, gruaux, semoules, amidons et fecules prepares du numero 19.01; les 'corn flakes' et autres produits du numero 19.04; les legumes prepares ou conserves des numeros 20.01, 20.04 ou 20.05; les produits pharmaceutiques (chapitre 30); et les amidons et fecules ayant le caractere de produits de parfumerie ou de toilette (chapitre 33).",
+      "source": "s02-ch11-produits-de-la-minoterie-malt-amidons.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quels produits sont consideres comme graines oleagineuses au sens du numero 12.07 du chapitre 12?",
+      "ground_truth": "Sont notamment considerees comme graines oleagineuses au sens du numero 12.07 : les noix et amandes de palmiste, les graines de coton, de ricin, de sesame, de moutarde, de carthame, d'oeillette ou de pavot, et de karite. En sont exclus les produits des numeros 08.01 ou 08.02 ainsi que les olives (chapitre 7 ou chapitre 20).",
+      "source": "s02-ch12-graines-et-fruits-oleagnieux.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelles plantes le numero 12.11 du chapitre 12 comprend-il?",
+      "ground_truth": "Le numero 12.11 comprend notamment les plantes et parties de plantes des especes suivantes : le basilic, la bourrache, le ginseng, l'hysope, la reglisse, les diverses especes de menthe, le romarin, la rue, la sauge et l'absinthe.",
+      "source": "s02-ch12-graines-et-fruits-oleagnieux.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quels produits le numero 13.02 du chapitre 13 comprend-il?",
+      "ground_truth": "Le numero 13.02 comprend notamment l'extrait de reglisse, l'extrait de pyrethre, l'extrait de houblon, l'extrait d'aloes et l'opium. En sont exclus, entre autres, les extraits de reglisse contenant plus de 10 % de saccharose (numero 17.04), les extraits de malt (numero 19.01) et les sucs et extraits vegetaux constituant des boissons alcooliques (chapitre 22).",
+      "source": "s02-ch13-gommes-resines.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Que couvre le numero 14.01 du chapitre 14 relatif aux matieres a tresser?",
+      "ground_truth": "Le numero 14.01 comprend notamment les bambous (meme fendus, scies longitudinalement, coupes de longueur, blanchis, ignifuges, polis ou teints), les eclisses d'osier, de roseaux et similaires, les moelles de rotin et le rotin file. N'y entrent pas les eclisses, lames ou rubans de bois, qui relevent du numero 44.04.",
+      "source": "s02-ch14-produits-vegetaux.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Que couvre le chapitre 15 du Tarif des douanes et quels produits en sont exclus?",
+      "ground_truth": "Le chapitre 15 couvre les graisses et huiles d'origine animale, vegetale ou microbienne, leurs fractions et produits derives, les graisses alimentaires elaborees et les cires d'origine animale ou vegetale. En sont exclus notamment : le lard et la graisse de porc et de volailles (numero 02.09); le beurre, la graisse et l'huile de cacao (numero 18.04); les cretons (numero 23.01); et les acides gras, cires preparees et corps gras transformes en produits pharmaceutiques, savons ou cosmetiques.",
+      "source": "s03-ch15.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Comment le Tarif des douanes definit-il le 'sucre brut' aux fins des numeros 1701.12, 1701.13 et 1701.14?",
+      "ground_truth": "On entend par sucre brut le sucre contenant en poids, a l'etat sec, un pourcentage de saccharose correspondant a une lecture au polarimetre inferieure a 99,5 degres. Le chapitre 17 exclut par ailleurs les sucreries contenant du cacao (numero 18.06).",
+      "source": "s04-ch17-sucres-et-sucreries.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quel est le tarif applicable au cacao en feves et brisures de feves (numero 18.01)?",
+      "ground_truth": "Le cacao en feves et les brisures de feves, bruts ou torrefies (numero 18.01, ligne 1801.00.00), sont en franchise au tarif de la nation la plus favorisee (NPF) et en franchise sous tous les tarifs de preference applicables. L'unite de mesure est la tonne (TNE).",
+      "source": "s04-ch18-cacao.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quels produits sont exclus du chapitre 18 (cacao et ses preparations)?",
+      "ground_truth": "Le chapitre 18 ne comprend pas les preparations alimentaires contenant plus de 20 % en poids de saucisse, viande, abats, sang, insectes, poisson, crustaces, mollusques ou autres invertebres aquatiques (chapitre 16), ni les preparations des numeros 04.03, 19.01, 19.02, 19.04, 19.05, 21.05, 22.02, 22.08, 30.03 ou 30.04.",
+      "source": "s04-ch18-cacao.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Que couvre le chapitre 19 du Tarif des douanes?",
+      "ground_truth": "Le chapitre 19 couvre les preparations a base de cereales, de farines, d'amidons, de fecules ou de lait, ainsi que les patisseries : extraits de malt, preparations alimentaires de farines, gruaux, semoules, amidons ou fecules, pates alimentaires, tapioca, produits a base de cereales soufflees ou grillees, et produits de la boulangerie, patisserie ou biscuiterie. Il exclut generalement les preparations contenant plus de 20 % en poids de viande ou de poisson (chapitre 16).",
+      "source": "s04-ch19.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Que couvre le chapitre 20 du Tarif des douanes relatif aux preparations de legumes et de fruits?",
+      "ground_truth": "Le chapitre 20 couvre les legumes, fruits et autres parties de plantes prepares ou conserves au vinaigre, en conserve, congeles, confits au sucre, sous forme de confitures et purees, ou transformes en jus. Il ne comprend pas les legumes et fruits prepares ou conserves par les procedes des chapitres 7, 8 ou 11, ni les preparations contenant plus de 20 % de viande ou de poisson (chapitre 16).",
+      "source": "s04-ch20.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quels produits sont exclus du chapitre 21 (preparations alimentaires diverses)?",
+      "ground_truth": "Le chapitre 21 ne comprend pas les melanges de legumes du numero 07.12, les succedanes torrefies du cafe contenant du cafe (numero 09.01), le the aromatise (numero 09.02), les epices des numeros 09.04 a 09.10, les preparations contenant plus de 20 % de viande ou de poisson (chapitre 16, sauf les numeros 21.03 et 21.04), les produits du numero 24.04, les levures conditionnees comme medicaments, et les enzymes preparees du numero 35.07.",
+      "source": "s04-ch21-preparation-alimentaires-diverses.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Au sens du chapitre 22, qu'est-ce qu'une boisson non alcoolique?",
+      "ground_truth": "Au sens du numero 22.02, on entend par boissons non alcooliques les boissons dont le titre alcoometrique volumique n'excede pas 0,5 % vol. Les boissons alcooliques sont classees, selon le cas, dans les numeros 22.03 a 22.06 ou dans le numero 22.08. Le titre alcoometrique volumique est determine a la temperature de 20 degres C.",
+      "source": "s04-ch22-boissons-liquides-alcooliques-et-vinaigres.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Comment le chapitre 22 definit-il les vins mousseux du numero 2204.10?",
+      "ground_truth": "Au sens du numero 2204.10, on entend par vins mousseux les vins presentant, lorsqu'ils sont conserves a la temperature de 20 degres C dans des recipients fermes, une surpression egale ou superieure a 3 bars.",
+      "source": "s04-ch22-boissons-liquides-alcooliques-et-vinaigres.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quel est le tarif de la nation la plus favorisee applicable aux bieres de malt du numero 22.03?",
+      "ground_truth": "Les bieres de malt (numero 22.03, ligne 2203.00.00) sont en franchise au tarif de la nation la plus favorisee (NPF), et egalement en franchise sous les tarifs de preference applicables. L'unite de mesure est le litre (LTR).",
+      "source": "s04-ch22-boissons-liquides-alcooliques-et-vinaigres.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quel produit du chapitre 22 est assujetti a un tarif NPF de 256 % mais pas moins de 36,67 $/hl?",
+      "ground_truth": "Les autres boissons contenant 50 % ou plus en poids de contenu laitier, non conditionnees pour la vente au detail, importees au-dessus de l'engagement d'acces (numero 2202.99.33), sont assujetties a un tarif de la nation la plus favorisee de 256 % mais pas moins de 36,67 $/hl.",
+      "source": "s04-ch22-boissons-liquides-alcooliques-et-vinaigres.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quels produits sont couverts par le chapitre 25 du Tarif des douanes?",
+      "ground_truth": "Le chapitre 25 couvre le sel, le soufre, les terres et pierres, ainsi que les platres, chaux et ciments. N'y entrent en principe que les produits a l'etat brut ou ayant subi des traitements mecaniques ou physiques simples (laves, concasses, broyes, pulverises, cribles, tamises, enrichis par flottation, etc.), a l'exclusion de la cristallisation. Les produits grilles, calcines ou resultant d'un melange sont exclus.",
+      "source": "s05-ch25-sel-soufre-terres-pierres-platres-chaux-ciments.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Selon la Note 3 du chapitre 25, comment classer un produit relevant a la fois du numero 25.17 et d'une autre position du chapitre?",
+      "ground_truth": "Selon la Note 3, tout produit susceptible de relever a la fois du numero 25.17 et d'une autre position du chapitre 25 est a classer au numero 25.17.",
+      "source": "s05-ch25-sel-soufre-terres-pierres-platres-chaux-ciments.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Comment le chapitre 26 definit-il le terme 'minerais' (numeros 26.01 a 26.17)?",
+      "ground_truth": "On entend par minerais les minerais des especes mineralogiques effectivement utilisees, en metallurgie, pour l'extraction du mercure, des metaux du numero 28.44 ou des metaux des Sections XIV ou XV, meme s'ils sont destines a des fins non metallurgiques, a condition qu'ils n'aient pas subi d'autres preparations que celles normalement reservees aux minerais de l'industrie metallurgique.",
+      "source": "s05-ch26-minerais-scories-cendres.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quels produits sont exclus du chapitre 26 (minerais, scories et cendres)?",
+      "ground_truth": "Le chapitre 26 ne comprend pas notamment : les laitiers et dechets industriels prepares sous forme de macadam (numero 25.17); le carbonate de magnesium naturel (magnesite), meme calcine (numero 25.19); les boues d'huiles de petrole (numero 27.10); les scories de dephosphoration (chapitre 31); les laines de laitier ou minerales (numero 68.06); et les mattes de cuivre, de nickel et de cobalt obtenues par fusion des minerais (Section XV).",
+      "source": "s05-ch26-minerais-scories-cendres.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Que couvre le chapitre 27 du Tarif des douanes et quels produits en sont exclus?",
+      "ground_truth": "Le chapitre 27 couvre les combustibles mineraux, les huiles minerales et les produits de leur distillation, les matieres bitumineuses et les cires minerales. Il exclut les produits organiques de constitution chimique definie presentes isolement (sauf le methane et le propane purs, qui relevent du numero 27.11), les medicaments des numeros 30.03 ou 30.04, et les hydrocarbures non satures melanges des numeros 33.01, 33.02 ou 38.05.",
+      "source": "s05-ch27.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Sous quel numero tarifaire du chapitre 27 sont classes le methane et le propane purs?",
+      "ground_truth": "Le methane et le propane purs relevent du numero 27.11, malgre l'exclusion generale des produits organiques de constitution chimique definie presentes isolement prevue a la Note 1 du chapitre 27.",
+      "source": "s05-ch27.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelle categorie d'acheteur n'est pas assujettie a l'exigence d'exercer des activites commerciales au Canada pour etre considere comme acheteur au Canada?",
+      "ground_truth": "Un acheteur particulier (personne physique) n'est pas assujetti a l'exigence relative a l'exercice de ses activites commerciales au Canada. Un particulier qui est un resident se qualifie a titre d'acheteur au Canada selon l'alinea 2.1 a) du Reglement; un particulier non resident peut se qualifier s'il remplit les conditions de l'alinea 2.1 c) (i).",
+      "source": "valeur-en-douane-d13-1-3-fra.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Comment sont traites les frais d'entreposage a l'etranger payes par l'acheteur au moment de la vente pour exportation?",
+      "ground_truth": "Les frais pour entreposer les marchandises a l'etranger au moment de la vente pour exportation au Canada, verses par l'acheteur directement ou indirectement au vendeur ou a son profit, font partie du prix paye ou a payer. Cela vaut meme si le vendeur facture ces frais separement ou si l'acheteur les paie a un exploitant d'entrepot independant au profit du vendeur.",
+      "source": "valeur-en-douane-d13-4-3-fra.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Un credit consenti pour une transaction anterieure peut-il reduire la valeur en douane des marchandises importees?",
+      "ground_truth": "Non. Le calcul de la valeur en douane ne peut tenir compte d'un montant de credit consenti pour une transaction anterieure (par exemple lorsque des marchandises fournies anterieurement avaient un defaut de fabrication).",
+      "source": "valeur-en-douane-d13-4-3-fra.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelle sanction du Regime de sanctions administratives pecuniaires (RSAP) peut etre imposee si une justification de l'origine ne peut etre presentee?",
+      "ground_truth": "Si une justification de l'origine ne peut etre presentee conformement a l'article 13 c) du Reglement sur la justification de l'origine des marchandises importees, la sanction C152 du RSAP pourra etre imposee.",
+      "source": "memorandum-D11-4-2.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "L'importation de textiles et de vetements est-elle assujettie a une licence d'importation particuliere?",
+      "ground_truth": "L'importation de textiles et de vetements est assujettie aux exigences relatives aux licences d'importation particulieres seulement si ces marchandises sont admissibles aux niveaux de preference tarifaire (NPT) des accords de libre-echange du Canada, ou assujetties aux contingents lies a l'origine en vertu de l'AECG (Canada-Union europeenne) ou de l'Accord de continuite commerciale (ACC) Canada-Royaume-Uni, et que l'importateur demande un taux de droit preferentiel.",
+      "source": "memorandum-D19-10-2.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Dans quelle case de la Declaration en detail commerciale (DDC) de type C faut-il inscrire le numero de licence d'importation pour les marchandises de la LMIC?",
+      "ground_truth": "Pour toutes les marchandises inscrites sur la LMIC, un numero de licence d'importation particuliere ou de LGI applicable doit figurer dans la case 81 (Permis d'autorisation speciale) de la Declaration en detail commerciale (DDC) de type C.",
+      "source": "memorandum-D19-10-2.md",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelle est la capitale de la France ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Qui a peint la Joconde ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Combien de continents y a-t-il sur Terre ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelle est la vitesse de la lumiere dans le vide ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Comment prepare-t-on une pate a crepes ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Qui a ecrit le roman Les Miserables ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelle est la planete la plus proche du Soleil ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "En quelle annee le premier homme a-t-il marche sur la Lune ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quel est le plus long fleuve du monde ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Comment dit-on bonjour en japonais ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Quelle est la formule chimique de l eau ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    },
+    {
+      "question": "Qui a developpe la theorie de la relativite ?",
+      "ground_truth": "I don't know",
+      "source": "",
+      "answer": "...",
+      "contexts": [
+        "...",
+        "..."
+      ],
+      "retrieved_sources": [
+        "...",
+        "..."
+      ]
+    }
+  ]
+}
