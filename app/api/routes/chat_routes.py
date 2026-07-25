@@ -55,11 +55,11 @@ def search_traitement_tarifiaires(pays: str, service: ChatService = Depends(get_
     '''
     return service.search_traitement_tarifiaires(pays)
 
-@chat_router.get("/exigences/{produit}/{pays}")
-def search_exigences_importation(produit:str, pays: str,
+@chat_router.get("/exigences/{codeSH}/{pays}")
+def search_exigences_importation(codeSH:str, pays: str,
                                  service: ChatService = Depends(get_chat_service)
                                 ):
     '''
     Searches for import requirements based on the specified product and country.
     '''
-    return service.search_exigences_importation(produit, pays)
+    return service.search_exigences_importation(codeSH, pays)

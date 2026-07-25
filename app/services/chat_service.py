@@ -22,8 +22,8 @@ class ChatService:
         prompt = f"Traitements tarifaires applicables au {pays}?"
         return self.generate(prompt, TraitementTarifiare)
     
-    def search_exigences_importation(self, produit: str, pays_importation: str) -> ExigencesImportation:
-        prompt = f"Selon le {produit} et le {pays_importation}, donne moi la  liste des exigences que l'exportateur doit respecter pour l'import de produit au canada concernant les sujets suivants : Emballage de Bois (Normes NIMP15), Justification de l'origine, Marquage / Étiquetage, Exigences de Bilinguisme, Exigences, d'importation générales, Certification Biologique, Exigences Canadiennes sur la Salubrité (RSAC)"
+    def search_exigences_importation(self, codeSH: str, pays_importation: str) -> ExigencesImportation:
+        prompt = f"Selon le produit avec le code sh: {codeSH} et le {pays_importation}, donne moi la  liste des exigences que l'exportateur doit respecter pour l'import de produit au canada concernant les sujets suivants : Emballage de Bois (Normes NIMP15), Justification de l'origine, Marquage / Étiquetage, Exigences de Bilinguisme, Exigences, d'importation générales, Certification Biologique, Exigences Canadiennes sur la Salubrité (RSAC)"
         return self.generate(prompt, ExigencesImportation)
 
     def generate(self, prompt: str, output_model: Type[T]) -> T:
