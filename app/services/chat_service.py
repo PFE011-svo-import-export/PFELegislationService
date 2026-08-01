@@ -31,7 +31,6 @@ class ChatService:
         candidates = self.rag_service.retrieve(prompt)
         retrieval_elapsed = time.perf_counter() - retrieval_start
         print(f"Retrieval took {retrieval_elapsed:.2f}s")
-        print(f"Here are the candidates retrieved from the vector store:\n{candidates}")
 
         count = self.client.messages.count_tokens(
             model="claude-sonnet-4-6", messages=[{"role": "user", "content": prompt}]
@@ -62,12 +61,10 @@ class ChatService:
         )
         llm_elapsed = time.perf_counter() - llm_start
 
-        
-        print(f"Total input tokens: {response.usage.input_tokens}")
-        print(f"Total output tokens: {response.usage.output_tokens}")
-
         print(f"LLM generation took {llm_elapsed:.2f}s")
 
+        print(f"Total input tokens: {response.usage.input_tokens}")
+        print(f"Total output tokens: {response.usage.output_tokens}")
         return response.parsed_output
 
     def answer_prompt(self, prompt: str) -> dict:

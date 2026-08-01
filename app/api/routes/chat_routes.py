@@ -7,6 +7,16 @@ from app.services.chat_service import ChatService
 
 chat_router = APIRouter()
 
+countries = {
+    "TG": "Togo",
+    "SN": "Sénégal",
+    "BJ": "Bénin",
+    "CI": "Côte d'Ivoire",
+    "CM": "Cameroun",
+    "GN": "Guinée",
+    "CA": "Canada"
+}
+
 class GenerateRequest(BaseModel):
     prompt: str
 
@@ -48,18 +58,18 @@ def stream_answer(req: GenerateRequest, service: ChatService = Depends(get_chat_
     )
 
 
-@chat_router.get("/tarifs/{pays}")
-def search_traitement_tarifiaires(pays: str, service: ChatService = Depends(get_chat_service)):
+@chat_router.get("/tarifs/{codePays}")
+def search_traitement_tarifiaires(codePays: str, service: ChatService = Depends(get_chat_service)):
     '''
     Searches for tariff treatments based on the specified country.    
     '''
-    return service.search_traitement_tarifiaires(pays)
+    return service.search_traitement_tarifiaires(countries[codePays.upper()])
 
-@chat_router.get("/exigences/{codeSH}/{pays}")
-def search_exigences_importation(codeSH:str, pays: str,
+@chat_router.get("/exigences/{codeSH}/{codePays}")
+def search_exigences_importation(codeSH:str, codePays: str,
                                  service: ChatService = Depends(get_chat_service)
                                 ):
     '''
     Searches for import requirements based on the specified product and country.
     '''
-    return service.search_exigences_importation(codeSH, pays)
+    return service.search_exigences_importation(codeSH, countries[codePays.upper()])
