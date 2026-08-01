@@ -27,6 +27,7 @@ class ChatService:
         return self.generate(prompt, ExigencesImportation)
 
     def generate(self, prompt: str, output_model: Type[T]) -> T:
+        print(f"The prompt: {prompt}")
         retrieval_start = time.perf_counter()
         candidates = self.rag_service.retrieve(prompt)
         retrieval_elapsed = time.perf_counter() - retrieval_start
